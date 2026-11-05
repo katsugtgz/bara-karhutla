@@ -1,0 +1,60 @@
+/* Layer order first — every other file uses these layers. */
+@layer reset, tokens, base, components, pages;
+
+/* Registered so the sky panel's background can transition between data colours. */
+@property --sky {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #d3d3cf;
+}
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Palette (light) — see DESIGN.md */
+    --peat: #2a1d15; /* ink */
+    --tea: #6b4423; /* secondary ink, rules, muted */
+    --mist: #e6eae4; /* page surface */
+    --ember: #f2611d; /* hotspots + focus ring only */
+    --sedge: #4f6b43; /* links, data OK */
+
+    /* Risk and sky scale — data, identical in both modes */
+    --sky-0: #d3d3cf;
+    --sky-1: #cfdfe2;
+    --sky-2: #d9c79a;
+    --sky-3: #c47f3a;
+    --sky-4: #9e3b25;
+    --sky-1-ink: var(--peat);
+    --sky-2-ink: var(--peat);
+    --sky-3-ink: var(--peat);
+    --sky-4-ink: #fbefe6;
+
+    --ink: var(--peat);
+    --rule: color-mix(in oklab, var(--tea) 35%, transparent);
+
+    /* Type */
+    --font-display: 'Anybody Variable', sans-serif;
+    --font-body: 'Atkinson Hyperlegible Next Variable', sans-serif;
+
+    /* Shape */
+    --radius-panel: 0;
+    --radius-button: 4px;
+    --radius-popover: 6px;
+    --shadow-popover: 0 8px 24px rgb(42 29 21 / 0.18);
+  }
+
+  /* Dark mode: surface deep peat, ink inverts, tea lightens. Sky tokens stay (they are data). */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --mist: #1b1410;
+      --ink: #eadfd3;
+      --tea: #b08b6a;
+    }
+  }
+  [data-theme='dark'] {
+    --mist: #1b1410;
+    --ink: #eadfd3;
+    --tea: #b08b6a;
+  }
+}

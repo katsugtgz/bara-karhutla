@@ -1,0 +1,40 @@
+@layer components {
+  .site-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-block-size: 48px;
+    padding-inline: 16px;
+    background: var(--mist);
+    border-block-end: 1px solid var(--rule);
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  .site-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.3125rem;
+    font-weight: 640;
+    color: var(--ink);
+    margin-inline-end: auto;
+  }
+
+  .site-nav {
+    display: flex;
+    gap: 1.25rem;
+
+    a {
+      color: var(--tea);
+      padding-block: 0.25rem;
+    }
+
+    a[aria-current='page'] {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 0.3em;
+      text-decoration-thickness: 2px;
+    }
+  }
+}

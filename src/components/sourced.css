@@ -1,0 +1,74 @@
+@layer components {
+  .sourced {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .sourced-value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sourced-btn {
+    border: 0;
+    background: none;
+    padding: 0 0.15em;
+    color: var(--tea);
+    cursor: pointer;
+    font-size: 0.875em;
+    vertical-align: baseline;
+  }
+
+  .sourced-btn:hover,
+  .sourced-btn:active {
+    color: var(--ink);
+  }
+
+  /* Fallback placement: the JS toggle handler sets inline inset when anchor
+     positioning is unavailable. UA popover default is fixed + inset 0. */
+  .sourced-popover {
+    inset: auto;
+    margin: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-popover);
+    background: var(--mist);
+    color: var(--ink);
+    padding: 0.75rem 1rem;
+    inline-size: max-content;
+    max-inline-size: min(20rem, calc(100vw - 16px));
+    box-shadow: var(--shadow-popover);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    text-align: start;
+    overscroll-behavior: contain;
+  }
+
+  .sourced-popover p + p {
+    margin-block-start: 0.4em;
+  }
+
+  .sourced-name {
+    font-weight: 700;
+  }
+
+  .sourced-meta {
+    color: var(--tea);
+  }
+
+  .sourced-tag {
+    display: inline-block;
+    border: 1px solid var(--ember);
+    color: var(--ember);
+    border-radius: var(--radius-button);
+    padding: 0 0.4em;
+    font-size: 0.75rem;
+  }
+
+  /* Anchor positioning where supported (Safari 27+ today); others use the fixed fallback. */
+  @supports (anchor-name: --x) {
+    .sourced-popover {
+      position-area: block-end span-inline-end;
+      margin-block-start: 6px;
+      position-try-fallbacks: flip-block, flip-inline;
+    }
+  }
+}

@@ -1,0 +1,157 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    min-height: 100svh;
+  }
+  img,
+  svg,
+  video,
+  canvas {
+    display: block;
+    max-inline-size: 100%;
+  }
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+}
+
+@layer base {
+  html {
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--mist); /* explicit page surface — flips to deep peat in dark mode */
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  blockquote,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  .prose {
+    max-inline-size: 68ch;
+  }
+
+  a {
+    color: var(--sedge);
+    text-underline-offset: 0.15em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 2px;
+  }
+
+  button,
+  select {
+    border-radius: var(--radius-button);
+  }
+
+  /* Data figures line up: tabular numerals everywhere numbers are compared. */
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Sky panel: background is the registered --sky colour so class changes animate.
+     Starts at --sky-0 (no data) and moves to the data colour over 1.2 s. */
+  .sky-panel {
+    background: var(--sky, var(--sky-0));
+    color: var(--sky-ink, var(--ink));
+    transition:
+      --sky 1.2s ease,
+      color 1.2s ease;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  /* "no data" hatch, drawn over --sky-0 */
+  .sky-hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 6px,
+      rgb(42 29 21 / 0.07) 6px 9px
+    );
+  }
+
+  .sky-1 {
+    --sky-ink: var(--sky-1-ink);
+  }
+  .sky-2 {
+    --sky-ink: var(--sky-2-ink);
+  }
+  .sky-3 {
+    --sky-ink: var(--sky-3-ink);
+  }
+  .sky-4 {
+    --sky-ink: var(--sky-4-ink);
+  }
+
+  .page-main {
+    padding: 1.5rem 16px 3rem;
+    max-inline-size: 68ch;
+  }
+
+  /* Status dot: ● sedge ok, ● ember-outlined empty, ○ tea hollow failed/snapshot. Always with text. */
+  .dot {
+    display: inline-block;
+    inline-size: 0.7em;
+    block-size: 0.7em;
+    border-radius: 50%;
+    vertical-align: baseline;
+    margin-inline-end: 0.4em;
+    background: var(--sedge);
+  }
+  .dot-empty {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--ember);
+  }
+  .dot-failed {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--tea);
+  }
+}
