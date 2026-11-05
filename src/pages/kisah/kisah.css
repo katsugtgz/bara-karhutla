@@ -254,6 +254,12 @@
       max-inline-size: none;
       background: color-mix(in oklab, var(--back) 86%, transparent);
     }
+
+    /* The sticky year panel is not a .kisah-block, so it needs the 16 px
+       gutter itself; without it the year sat flush on the screen edge. */
+    .kisah-timeline-sticky {
+      padding-inline: 16px;
+    }
   }
 
   @media (min-width: 960px) {
