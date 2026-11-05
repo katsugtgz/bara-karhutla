@@ -20,6 +20,20 @@ const EMBER = '#F2611D';
 const POSITRON = 'https://tiles.openfreemap.org/styles/positron';
 const DARK = 'https://tiles.openfreemap.org/styles/dark';
 
+/** MapLibre's control labels and screen-reader names, in Bahasa Indonesia. */
+const LOCALE_ID: Record<string, string> = {
+  'Map.Title': 'Peta',
+  'Popup.Close': 'Tutup',
+  'NavigationControl.ZoomIn': 'Perbesar',
+  'NavigationControl.ZoomOut': 'Perkecil',
+  'NavigationControl.ResetBearing': 'Kembalikan arah utara',
+  'AttributionControl.ToggleAttribution': 'Tampilkan atau sembunyikan atribusi',
+  'AttributionControl.MapFeedback': 'Masukan untuk peta',
+  'CooperativeGesturesHandler.WindowsHelpText': 'Tekan Ctrl sambil menggulir untuk memperbesar peta',
+  'CooperativeGesturesHandler.MacHelpText': 'Tekan ⌘ sambil menggulir untuk memperbesar peta',
+  'CooperativeGesturesHandler.MobileHelpText': 'Geser peta dengan dua jari',
+};
+
 const fmt = new Intl.NumberFormat('id-ID');
 const fmt1 = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 });
 const n = (v: number | null) => (v === null ? 'tidak tersedia' : fmt.format(v));
@@ -196,6 +210,7 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
       center: [113, -1.2],
       zoom: 4.3,
       attributionControl: { compact: true },
+      locale: LOCALE_ID,
     });
     mapRef.current = map;
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
