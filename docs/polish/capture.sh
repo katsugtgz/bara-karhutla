@@ -1,7 +1,10 @@
 #!/bin/bash
 # Usage: capture.sh <base-url> <out-dir> [session-name]
 # Takes the same set of screenshots of Bara every time, so before/after sets line up.
-set -u
+# The set is fixed at 20 shots to match the baseline. Kisah is shot in light mode only:
+# its background is each year's data sky, and it has no dark-mode styles of its own.
+# Stops on the first failed agent-browser command, so a partial set never looks complete.
+set -euo pipefail
 BASE="${1%/}"; OUT="$2"; S="${3:-bara-capture}"
 mkdir -p "$OUT"
 ab() { agent-browser --session "$S" "$@"; }
@@ -29,5 +32,5 @@ for vp in "desktop 1440 900" "mobile 390 844"; do
   ab open "$BASE/metode/" >/dev/null; ab wait 1500 >/dev/null
   ab screenshot "$OUT/$name-metode-dark.png" >/dev/null
 done
-ab close >/dev/null 2>&1
+ab close >/dev/null 2>&1 || true
 ls "$OUT"

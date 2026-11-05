@@ -78,8 +78,9 @@ DESIGN.md rule broken; **low** = finish and rhythm.
 - No horizontal scroll on any page at 360px.
 - Screenshots: before and after sets were captured locally with the same agent-browser
   script, `docs/polish/capture.sh`, and compared one by one. The PNGs are not committed
-  (about 27 MB). To reproduce a set: `npm run build && npx vite preview --port 4610`, then
-  `docs/polish/capture.sh http://localhost:4610 <out-dir>` (needs agent-browser).
+  (about 27 MB). To reproduce a set (needs agent-browser), run
+  `npm run build && npx vite preview --port 4610` in one terminal and leave it running,
+  then in a second terminal run `docs/polish/capture.sh http://localhost:4610 <out-dir>`.
 
 ## Commits
 
