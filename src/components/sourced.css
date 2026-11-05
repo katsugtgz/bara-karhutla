@@ -28,6 +28,19 @@
     color: var(--ink);
   }
 
+  /* On touch screens the glyph stays small but the tap area grows to about
+     40 px, without moving any text (DESIGN.md: touch targets). */
+  @media (pointer: coarse) {
+    .sourced-btn {
+      position: relative;
+    }
+    .sourced-btn::after {
+      content: '';
+      position: absolute;
+      inset: -10px -10px;
+    }
+  }
+
   /* Fallback placement: the JS toggle handler sets inline inset when anchor
      positioning is unavailable. UA popover default is fixed + inset 0. */
   .sourced-popover {

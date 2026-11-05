@@ -139,6 +139,8 @@ table, limitations, and open questions. Ordinary rules and tables, no cards.
 - **Region switch**: a native `<select>` styled with the tokens.
 - **Status dot**: `●` sedge = ok, `●` ember-outlined = empty file, `○` tea hollow = failed
   and on snapshot. Always followed by text.
+- **Touch targets**: at least 24 px everywhere; on coarse pointers 40–44 px for the ⓘ
+  button (hit area grows, glyph does not), the region switch and the map controls.
 - **Focus ring**: 3 px `--ember` outline at 2 px offset, with a 2 px keyline in the
   element's own ink (`box-shadow: 0 0 0 2px currentColor`) filling the gap. Ember alone
   is 1.0:1 on `--sky-3` and under 3:1 on mist; the keyline keeps the ring visible on

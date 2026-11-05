@@ -95,9 +95,18 @@
     max-inline-size: min(15rem, 70%);
   }
 
+  /* The summary fills the chip's padding so the whole collapsed legend is
+     the tap target, not just the 20 px line of text. */
   .legend summary {
     cursor: pointer;
     font-weight: 700;
+    margin: -0.6rem -0.75rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .legend[open] summary {
+    margin-block-end: 0;
+    padding-block-end: 0;
   }
 
   .legend-head {
@@ -236,6 +245,27 @@
 
   .maplibregl-ctrl-group {
     border-radius: var(--radius-button);
+  }
+
+  /* MapLibre's popup close is a 15 px glyph; give it a real target. */
+  .maplibregl-popup-close-button {
+    inline-size: 2rem;
+    block-size: 2rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* Touch screens: 40-44 px targets for the region switch and map controls. */
+  @media (pointer: coarse) {
+    .region-select {
+      min-block-size: 44px;
+    }
+
+    .maplibregl-ctrl-group button {
+      inline-size: 40px;
+      block-size: 40px;
+    }
   }
 
   /* "Geser peta dengan dua jari" hint (phones only), in the site's type and ink. */
