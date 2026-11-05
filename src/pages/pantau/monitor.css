@@ -76,8 +76,9 @@
     inset: 0;
   }
 
+  /* Ink, not ember: ember is only for hotspots and the focus ring. */
   .health-warning {
-    color: var(--ember);
+    color: var(--ink);
     font-weight: 700;
   }
 
@@ -229,6 +230,16 @@
   .health-row .dot {
     flex: none;
     translate: 0 0.1em;
+  }
+
+  .health-name,
+  .health-detail {
+    display: block;
+  }
+
+  .health-detail {
+    color: var(--tea);
+    font-variant-numeric: tabular-nums;
   }
 
   .disclaimer {

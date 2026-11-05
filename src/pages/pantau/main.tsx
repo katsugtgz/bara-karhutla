@@ -428,19 +428,23 @@ function SkyHero({ regionsFile, regionId, onChooseRegion, live, summary, nowMs, 
 function HealthRow({ rec }: { rec: SourceRecord }) {
   const count = rec.rows === null ? null : fmt.format(rec.rows);
   const unit = rec.id === 'open-meteo' ? 'sel cuaca' : 'titik';
-  let text: string;
-  if (rec.status === 'ok') text = `${rec.name}: ${count} ${unit}, ${relativeId(rec.fetchedAt)}`;
-  else if (rec.status === 'empty') text = `${rec.name}: berkas kosong (0 ${unit}), ${relativeId(rec.fetchedAt)}`;
-  else if (rec.status === 'stale')
-    text = `${rec.name}: gagal, memakai snapshot ${relativeId(rec.fetchedAt)}`;
-  else text = `${rec.name}: gagal, tidak ada snapshot.`;
+  let detail: string;
+  if (rec.status === 'ok') detail = `${count} ${unit}, ${relativeId(rec.fetchedAt)}`;
+  else if (rec.status === 'empty') detail = `berkas kosong (0 ${unit}), ${relativeId(rec.fetchedAt)}`;
+  else if (rec.status === 'stale') detail = `gagal, memakai snapshot ${relativeId(rec.fetchedAt)}`;
+  else detail = 'gagal, tidak ada snapshot.';
   const dot = rec.status === 'ok' ? 'dot' : rec.status === 'empty' ? 'dot dot-empty' : 'dot dot-failed';
+  // Name on its own line, status underneath: five sources scan as a list
+  // instead of five run-on sentences that wrap mid-figure.
   return (
     <p className="health-row">
       <span className={dot} aria-hidden="true" />
       <span>
-        {text}
-        {rec.warning ? <strong className="health-warning"> Peringatan: {rec.warning}</strong> : null}
+        <span className="health-name">{rec.name}</span>
+        <span className="health-detail">
+          {detail}
+          {rec.warning ? <strong className="health-warning"> Peringatan: {rec.warning}</strong> : null}
+        </span>
       </span>
     </p>
   );
