@@ -49,6 +49,7 @@ type Region = RegionsFile['regions'][number];
 interface Refs {
   live: LiveData | null;
   region: Region | null;
+  selected: string | null;
   onSelectCell: (id: string) => void;
   openPopup?: (id: string, lngLat?: LngLatLike) => void;
 }
@@ -114,8 +115,11 @@ function preferIndonesianLabels(map: MlMap) {
   }
 }
 
+/** Outline filter for the selected cell ('' matches nothing). */
+const selectedFilter = (id: string | null) => ['==', ['get', 'id'], id ?? ''];
+
 /** Add layers once per style load; update existing sources with setData. */
-function applySources(map: MlMap, live: LiveData | null, region: Region | null, dark: boolean) {
+function applySources(map: MlMap, live: LiveData | null, region: Region | null, dark: boolean, selected: string | null) {
   if (!region || !live) return;
   const cells = cellFc(region, live.cells);
   const geom = { type: 'Feature' as const, properties: {}, geometry: region.geometry };
@@ -142,6 +146,14 @@ function applySources(map: MlMap, live: LiveData | null, region: Region | null, 
       type: 'line',
       source: 'cells',
       paint: { 'line-color': dark ? INK_DARK : TEA, 'line-opacity': 0.35, 'line-width': 0.5 },
+    },
+    {
+      // The cell picked on the map or in "Sel paling berisiko": a heavy ink frame.
+      id: 'cells-selected',
+      type: 'line',
+      source: 'cells',
+      filter: selectedFilter(selected),
+      paint: { 'line-color': dark ? INK_DARK : PEAT, 'line-width': 3 },
     },
     {
       id: 'region-outline',
@@ -190,15 +202,16 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const [ready, setReady] = useState(false);
-  const refs = useRef<Refs>({ live, region, onSelectCell });
+  const refs = useRef<Refs>({ live, region, selected, onSelectCell });
   const darkRef = useRef(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   // Keep the map's closures reading fresh values without recreating it.
   useEffect(() => {
     refs.current.live = live;
     refs.current.region = region;
+    refs.current.selected = selected;
     refs.current.onSelectCell = onSelectCell;
-  }, [live, region, onSelectCell]);
+  }, [live, region, selected, onSelectCell]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -234,12 +247,12 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
 
     const onStyleData = () => {
       if (map.isStyleLoaded()) {
-        applySources(map, refs.current.live, refs.current.region, darkRef.current);
+        applySources(map, refs.current.live, refs.current.region, darkRef.current, refs.current.selected);
         preferIndonesianLabels(map);
       }
     };
     const onLoad = () => {
-      applySources(map, refs.current.live, refs.current.region, darkRef.current);
+      applySources(map, refs.current.live, refs.current.region, darkRef.current, refs.current.selected);
       preferIndonesianLabels(map);
       setReady(true);
     };
@@ -286,8 +299,14 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
   // Data or region changed: refresh sources (no-op before the map is ready).
   useEffect(() => {
     const map = mapRef.current;
-    if (map && ready && live) applySources(map, live, region, darkRef.current);
+    if (map && ready && live) applySources(map, live, region, darkRef.current, refs.current.selected);
   }, [ready, live, region]);
+
+  // Selection changed (map click, list click, or region switch clearing it).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (map && ready && map.getLayer('cells-selected')) map.setFilter('cells-selected', selectedFilter(selected) as never);
+  }, [ready, selected]);
 
   // Region changed: fit to it.
   useEffect(() => {
