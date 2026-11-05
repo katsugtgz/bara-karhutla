@@ -204,6 +204,7 @@
     grid-template-columns: auto 1fr auto;
     align-items: baseline;
     gap: 0.6rem;
+    min-block-size: 44px;
     inline-size: 100%;
     text-align: start;
     background: none;

@@ -66,7 +66,8 @@
 
   /* Status is the dot plus a word, never colour alone (DESIGN.md: status dot).
      Ember stays reserved for hotspots and the focus ring. */
-  .metode .log-status {
+  .metode .log-status,
+  .metode .log-table td:first-child {
     white-space: nowrap;
   }
 

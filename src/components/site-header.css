@@ -52,7 +52,10 @@
 
     a {
       color: var(--tea);
-      padding-block: 0.25rem;
+      /* 44 px tap target inside the 48 px bar. */
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 44px;
     }
 
     .nav-short {

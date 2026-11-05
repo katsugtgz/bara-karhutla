@@ -88,8 +88,8 @@
   }
 
   .kisah-kicker {
-    font-size: 0.875rem;
-    color: color-mix(in oklab, currentColor 72%, transparent);
+    font-size: 1rem;
+    color: color-mix(in oklab, currentColor 86%, transparent);
   }
 
   .kisah-question {
@@ -100,8 +100,8 @@
   }
 
   .kisah-note {
-    font-size: 0.875rem;
-    color: color-mix(in oklab, currentColor 78%, transparent);
+    font-size: 1rem;
+    color: color-mix(in oklab, currentColor 88%, transparent);
   }
 
   /* One big number per screen (progressive disclosure by scroll). */
@@ -153,7 +153,7 @@
   }
 
   .kisah-area {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .kisah-area-link {
