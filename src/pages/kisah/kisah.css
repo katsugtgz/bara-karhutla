@@ -260,6 +260,37 @@
     .kisah-timeline-sticky {
       padding-inline: 16px;
     }
+
+    /* The phone camera draws Indonesia across the middle of the screen, right
+       where the centred year text sat, and the full-height backing hid the
+       year-by-year hotspots. Pin the year to the top and the bar strip to the
+       bottom, and back only those bands, so the map shows in between. */
+    .kisah-timeline-sticky {
+      justify-content: flex-start;
+      padding-block: 3rem 1.5rem;
+      /* Bands follow the blended canvas sky (set every frame by the scene),
+         not the snapped year class, so no seam shows between band and map. */
+      --back: var(--live-sky, var(--sky, var(--sky-1)));
+      --band: color-mix(in oklab, var(--back) 86%, transparent);
+      background: linear-gradient(
+        to bottom,
+        var(--band) 0 13rem,
+        transparent 16rem calc(100% - 15rem),
+        var(--band) calc(100% - 12rem) 100%
+      );
+
+      > div:has(> .kisah-strip) {
+        margin-block-start: auto;
+      }
+    }
+
+    /* Ink follows the same blended sky, as on desktop. */
+    .kisah .kisah-timeline-sticky {
+      color: var(--peat);
+    }
+    .kisah[data-ink='light'] .kisah-timeline-sticky {
+      color: var(--sky-4-ink);
+    }
   }
 
   @media (min-width: 960px) {

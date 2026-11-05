@@ -110,7 +110,9 @@ signals and data health. Content is left-aligned throughout. 16 px side gutter.
 A fixed full-viewport Three.js canvas sits behind narrow text columns (about 30rem)
 that scroll over it. Text blocks are left-aligned, offset to the left third on desktop
 and full-width with a translucent sky backing on mobile. Years are the section markers,
-and that is legitimate because the content is a real timeline.
+and that is legitimate because the content is a real timeline. On mobile the sticky year
+panel splits: year and count at the top, bar strip at the bottom, each on a backed band
+of the live sky, so the hotspot map stays visible in the middle while the years scrub.
 
 ```
 [canvas: Indonesia as a field of peat-brown dots, hotspots as ember particles]
