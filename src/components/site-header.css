@@ -13,6 +13,31 @@
     }
   }
 
+  /* Hidden until focused, then a chip in the top-left corner. */
+  .skip-link {
+    position: absolute;
+    inset-block-start: 6px;
+    inset-inline-start: 8px;
+    z-index: 10;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-button);
+    background: var(--peat);
+    color: #fbefe6;
+    font-weight: 700;
+    translate: 0 -200%;
+
+    &:focus-visible {
+      translate: 0 0;
+    }
+  }
+
+  /* The skip target is not a control; it takes focus only to move the
+     reading position, so it shows no ring. */
+  #konten:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
   .site-wordmark {
     font-family: var(--font-display);
     font-size: 1.3125rem;
@@ -27,7 +52,10 @@
 
     a {
       color: var(--tea);
-      padding-block: 0.25rem;
+      /* 44 px tap target inside the 48 px bar. */
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 44px;
     }
 
     .nav-short {

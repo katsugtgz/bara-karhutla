@@ -23,6 +23,13 @@ const STATUS_WORD: Record<SourceStatus, string> = {
   stale: 'basi',
   failed: 'gagal',
 };
+// Same dots as Kesehatan data on Pantau (DESIGN.md: status dot).
+const STATUS_DOT: Record<SourceStatus, string> = {
+  ok: 'dot',
+  empty: 'dot dot-empty',
+  stale: 'dot dot-failed',
+  failed: 'dot dot-failed',
+};
 const wibShort = new Intl.DateTimeFormat('id-ID', {
   day: 'numeric',
   month: 'numeric',
@@ -81,49 +88,55 @@ function LogTable() {
     );
   return (
     <>
-      <table>
-        <caption className="sourced-meta" style={{ textAlign: 'start' }}>
-          20 baris terakhir berkas <span className="num">data/fetch-log.jsonl</span>. Status per sumber pada saat
-          pengambilan.
-        </caption>
-      <thead>
-        <tr>
-          <th scope="col">Waktu (WIB)</th>
-          {cols.map((c) => (
-            <th scope="col" key={c}>
-              {SOURCE_SHORT[c] ?? c}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {lines.map((l) => (
-          <tr key={l.generatedAt}>
-            <td className="num">{shortWib(l.generatedAt)}</td>
-            {cols.map((c) => {
-              const s = l.sources.find((x) => x.id === c);
-              return (
-                <td
-                  key={c}
-                  className={`num log-status-${s?.status ?? 'failed'}`}
-                  title={s?.warning ?? undefined}
-                >
-                  {s ? STATUS_WORD[s.status] : '—'}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
+      <div className="table-scroll" role="region" aria-labelledby="log-caption" tabIndex={0}>
+        <table className="log-table">
+          <caption id="log-caption" className="sourced-meta">
+            20 baris terakhir berkas <span className="num">data/fetch-log.jsonl</span>. Status per sumber pada saat
+            pengambilan.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Waktu (WIB)</th>
+              {cols.map((c) => (
+                <th scope="col" key={c}>
+                  {SOURCE_SHORT[c] ?? c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((l) => (
+              <tr key={l.generatedAt}>
+                <td className="num">{shortWib(l.generatedAt)}</td>
+                {cols.map((c) => {
+                  const s = l.sources.find((x) => x.id === c);
+                  // A source missing from a log line gets no dot: the log never recorded a failure.
+                  return (
+                    <td key={c} className="log-status" title={s?.warning ?? undefined}>
+                      {s ? (
+                        <>
+                          <span className={STATUS_DOT[s.status]} aria-hidden="true" />
+                          {STATUS_WORD[s.status]}
+                        </>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
         </table>
+      </div>
       {warnings.length > 0 ? (
-        <p className="log-warnings">
+        <ul className="log-warnings">
           {warnings.map((w) => (
-            <strong key={w} className="log-warning">
-              Peringatan: {w}
-            </strong>
+            <li key={w}>
+              <strong>Peringatan:</strong> {w}
+            </li>
           ))}
-        </p>
+        </ul>
       ) : null}
     </>
   );
@@ -138,7 +151,7 @@ function Metode() {
   return (
     <>
       <SiteHeader current="metode" />
-      <main className="page-main prose metode">
+      <main className="page-main prose metode" id="konten" tabIndex={-1}>
         <h1>Metode &amp; sumber</h1>
         <p>
           Skor risiko v0 dihitung oleh kode yang bisa diuji (src/lib/risk.ts), bukan oleh penilaian AI.
@@ -152,11 +165,19 @@ function Metode() {
             <span className="num">55 × 55</span> km). Setiap sel diberi skor{' '}
             <span className="num">0–100</span> dari tiga sinyal:
           </p>
+          {/* Each term stays whole, so a narrow screen breaks between terms
+              instead of leaving "· r )" alone on the last line. */}
           <code className="formula">
-            skor = 100 × ({' '}
-            <Sourced value={fmtWeight.format(w.hotspots)} source={DIHITUNG} /> · h +{' '}
-            <Sourced value={fmtWeight.format(w.dryDays)} source={DIHITUNG} /> · d +{' '}
-            <Sourced value={fmtWeight.format(w.rain30)} source={DIHITUNG} /> · r )
+            <span className="term">skor = 100 × (</span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.hotspots)} source={DIHITUNG} /> · h +
+            </span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.dryDays)} source={DIHITUNG} /> · d +
+            </span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.rain30)} source={DIHITUNG} /> · r )
+            </span>
           </code>
           <p>
             <strong>h — titik panas 24 jam.</strong> Jumlah lokasi unik (dibulatkan ke sekitar{' '}
@@ -241,7 +262,7 @@ function Metode() {
 
         <section>
           <h2>Data yang dipakai</h2>
-          <div className="table-scroll" role="region" aria-label="Tabel sumber data (bisa digeser mendatar)">
+          <div className="table-scroll" role="region" aria-label="Tabel sumber data (bisa digeser mendatar)" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -320,29 +341,27 @@ function Metode() {
                   <td className="num">mingguan</td>
                   <td>Belum tersambung ke skor; dipakai untuk pembanding kronologi.</td>
                 </tr>
-              <tr>
-                <td>MPeat / peatfr (Dr. Adilan Mahdiyasa)</td>
-                <td>Model kekeringan gambut (belum dipakai)</td>
-                <td>—</td>
-                <td>—</td>
-                <td>Menunggu izin dan lisensi dari pemilik kode sebelum diterjemahkan atau dijalankan.</td>
-              </tr>
-              <tr>
-                <td>Natural Earth admin-1</td>
-                <td>Batas wilayah dan grid sel</td>
-                <td>
-                  <a
-                    href="https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    natural-earth-vector (GitHub)
-                  </a>
-                </td>
-                <td className="num">sekali (berkas statis)</td>
-                <td>Domain publik; disederhanakan 8% dengan mapshaper.</td>
-              </tr>
-            </tbody>
+                <tr>
+                  <td>MPeat / peatfr (Dr. Adilan Mahdiyasa)</td>
+                  <td>Model kekeringan gambut (belum dipakai)</td>
+                  <td>—</td>
+                  <td>Menunggu izin dan lisensi dari pemilik kode sebelum diterjemahkan atau dijalankan.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <a
+                      href="https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Natural Earth admin-1
+                    </a>
+                  </td>
+                  <td>Batas wilayah dan grid sel</td>
+                  <td className="num">sekali (berkas statis)</td>
+                  <td>Domain publik (natural-earth-vector di GitHub); disederhanakan 8% dengan mapshaper.</td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <p>
@@ -374,7 +393,7 @@ function Metode() {
         </section>
 
         <section>
-          <h2>Kesehatan pengambilan data</h2>
+          <h2 id="kesehatan">Kesehatan pengambilan data</h2>
           <p>
             Setiap kali pipeline live berjalan (terjadwal tiap 3 jam), status tiap sumber dicatat ke berkas
             log. Gagal tidak pernah dicatat sebagai nol: sumber gagal memakai snapshot terakhir dan

@@ -14,6 +14,10 @@ export function SiteHeader({ current }: SiteHeaderProps) {
   const base = import.meta.env.BASE_URL;
   return (
     <header className="site-header">
+      {/* Every page's <main> has id="konten". */}
+      <a className="skip-link" href="#konten">
+        Langsung ke konten
+      </a>
       <a className="site-wordmark" href={base}>
         bara
       </a>

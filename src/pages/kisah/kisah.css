@@ -88,8 +88,8 @@
   }
 
   .kisah-kicker {
-    font-size: 0.875rem;
-    color: color-mix(in oklab, currentColor 72%, transparent);
+    font-size: 1rem;
+    color: color-mix(in oklab, currentColor 86%, transparent);
   }
 
   .kisah-question {
@@ -100,8 +100,8 @@
   }
 
   .kisah-note {
-    font-size: 0.875rem;
-    color: color-mix(in oklab, currentColor 78%, transparent);
+    font-size: 1rem;
+    color: color-mix(in oklab, currentColor 88%, transparent);
   }
 
   /* One big number per screen (progressive disclosure by scroll). */
@@ -153,7 +153,7 @@
   }
 
   .kisah-area {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .kisah-area-link {
@@ -185,6 +185,11 @@
   .kisah-live {
     border-block-start: 1px solid var(--rule);
     padding-block-start: 0.75rem;
+
+    /* fallback link sits on the sky, which stays light in dark mode */
+    > a {
+      color: inherit;
+    }
   }
 
   .kisah-actions {
@@ -249,6 +254,43 @@
       max-inline-size: none;
       background: color-mix(in oklab, var(--back) 86%, transparent);
     }
+
+    /* The sticky year panel is not a .kisah-block, so it needs the 16 px
+       gutter itself; without it the year sat flush on the screen edge. */
+    .kisah-timeline-sticky {
+      padding-inline: 16px;
+    }
+
+    /* The phone camera draws Indonesia across the middle of the screen, right
+       where the centred year text sat, and the full-height backing hid the
+       year-by-year hotspots. Pin the year to the top and the bar strip to the
+       bottom, and back only those bands, so the map shows in between. */
+    .kisah-timeline-sticky {
+      justify-content: flex-start;
+      padding-block: 3rem 1.5rem;
+      /* Bands follow the blended canvas sky (set every frame by the scene),
+         not the snapped year class, so no seam shows between band and map. */
+      --back: var(--live-sky, var(--sky, var(--sky-1)));
+      --band: color-mix(in oklab, var(--back) 86%, transparent);
+      background: linear-gradient(
+        to bottom,
+        var(--band) 0 13rem,
+        transparent 16rem calc(100% - 15rem),
+        var(--band) calc(100% - 12rem) 100%
+      );
+
+      > div:has(> .kisah-strip) {
+        margin-block-start: auto;
+      }
+    }
+
+    /* Ink follows the same blended sky, as on desktop. */
+    .kisah .kisah-timeline-sticky {
+      color: var(--peat);
+    }
+    .kisah[data-ink='light'] .kisah-timeline-sticky {
+      color: var(--sky-4-ink);
+    }
   }
 
   @media (min-width: 960px) {
@@ -267,11 +309,15 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
+      /* Stops are tied to the text column's right edge (its offset + 30rem),
+         not to percentages: at 1024 px the old 42%/62% stops faded out
+         mid-column and body text ran over the brightest hotspot columns. */
+      --col-end: calc(clamp(1.5rem, 18vw, 26rem) + 30rem);
       background: linear-gradient(
         to right,
-        color-mix(in srgb, var(--live-sky, var(--sky-1)) 90%, transparent) 0%,
-        color-mix(in srgb, var(--live-sky, var(--sky-1)) 78%, transparent) 42%,
-        transparent 62%
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 90%, transparent) 0,
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 84%, transparent) var(--col-end),
+        transparent calc(var(--col-end) + 10rem)
       );
     }
 
@@ -316,10 +362,14 @@
     stroke-width: 2;
   }
   .peat-water {
-    fill: var(--sedge);
-    opacity: 0.35;
     /* final (drained) state — also the static fallback */
     transform: translateY(48px);
+  }
+  /* Tint only the water, not its label: group opacity left "muka air" at
+     a third of its contrast on the dark peat. */
+  .peat-water rect {
+    fill: var(--sedge-sky);
+    opacity: 0.35;
   }
   .peat-embers {
     opacity: 1;
@@ -335,12 +385,14 @@
     font-size: 11px;
     fill: var(--peat);
   }
+  /* Labels on the dark peat use the stable light ink: --mist turns dark in
+     dark mode and made "bara" and "gambut" vanish. */
   .peat-label-water {
-    fill: var(--sedge);
+    fill: var(--sky-1);
   }
   .peat-label-peat,
   .peat-label-ember {
-    fill: var(--mist);
+    fill: var(--sky-4-ink);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -390,5 +442,12 @@
   .kisah .sourced-btn:hover,
   .kisah .sourced-btn:focus-visible {
     opacity: 1;
+  }
+
+  /* On the one-number screens the button would scale to a 4.5rem circle
+     that competes with the figure: keep it small and set it high. */
+  .kisah-big .sourced-btn {
+    font-size: max(1.125rem, 0.4em);
+    vertical-align: super;
   }
 }

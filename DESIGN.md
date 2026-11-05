@@ -46,7 +46,11 @@ with a text label, never colour alone.
 | (no data) | `--sky-0` | `#D3D3CF` with diagonal hatch | peat |
 
 Dark mode (`prefers-color-scheme: dark` plus a `data-theme` override): surface
-`#1B1410` (deep peat), ink `#EADFD3`, tea `#B08B6A`. The sky tokens stay the same,
+`#1B1410` (deep peat), ink `#EADFD3`, tea `#B08B6A`, sedge `#93B283` (7.7:1 on the
+surface; the light-mode sedge is only 3.05:1 there). Sedge drawn on the light skies
+(sky-1, sky-2) uses `--sedge-sky` (`#4F6B43` in both modes), because those skies stay
+light. On sky-3 and sky-4 sedge is too weak (about 1.8:1 and 1.1:1): use peat on sky-3
+and `#FBEFE6` on sky-4, as in the table above. The sky tokens stay the same,
 because they are data, but sky-1 and sky-2 panels switch to peat text.
 
 ## Type
@@ -108,7 +112,9 @@ signals and data health. Content is left-aligned throughout. 16 px side gutter.
 A fixed full-viewport Three.js canvas sits behind narrow text columns (about 30rem)
 that scroll over it. Text blocks are left-aligned, offset to the left third on desktop
 and full-width with a translucent sky backing on mobile. Years are the section markers,
-and that is legitimate because the content is a real timeline.
+and that is legitimate because the content is a real timeline. On mobile the sticky year
+panel splits: year and count at the top, bar strip at the bottom, each on a backed band
+of the live sky, so the hotspot map stays visible in the middle while the years scrub.
 
 ```
 [canvas: Indonesia as a field of peat-brown dots, hotspots as ember particles]
@@ -135,8 +141,15 @@ table, limitations, and open questions. Ordinary rules and tables, no cards.
 - **Region switch**: a native `<select>` styled with the tokens.
 - **Status dot**: `●` sedge = ok, `●` ember-outlined = empty file, `○` tea hollow = failed
   and on snapshot. Always followed by text.
+- **Touch targets**: at least 24 px everywhere; on coarse pointers 40–44 px for the ⓘ
+  button (hit area grows, glyph does not), the region switch and the map controls.
+- **Focus ring**: 3 px `--ember` outline at 2 px offset, with a 2 px keyline in the
+  element's own ink (`box-shadow: 0 0 0 2px currentColor`) filling the gap. Ember alone
+  is 1.0:1 on `--sky-3` and under 3:1 on mist; the keyline keeps the ring visible on
+  every sky. Forced-colors mode drops the keyline and keeps the outline.
 - Radius: 0 on panels and map, 4 px on buttons and select, 6 px on popovers. No drop
-  shadows except the popover (`0 8px 24px rgb(42 29 21 / .18)`).
+  shadows except the popover (`0 8px 24px rgb(42 29 21 / .18)`); the focus keyline is
+  not a shadow.
 
 ## Motion
 

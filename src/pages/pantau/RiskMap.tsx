@@ -20,6 +20,20 @@ const EMBER = '#F2611D';
 const POSITRON = 'https://tiles.openfreemap.org/styles/positron';
 const DARK = 'https://tiles.openfreemap.org/styles/dark';
 
+/** MapLibre's control labels and screen-reader names, in Bahasa Indonesia. */
+const LOCALE_ID: Record<string, string> = {
+  'Map.Title': 'Peta',
+  'Popup.Close': 'Tutup',
+  'NavigationControl.ZoomIn': 'Perbesar',
+  'NavigationControl.ZoomOut': 'Perkecil',
+  'NavigationControl.ResetBearing': 'Kembalikan arah utara',
+  'AttributionControl.ToggleAttribution': 'Tampilkan atau sembunyikan atribusi',
+  'AttributionControl.MapFeedback': 'Masukan untuk peta',
+  'CooperativeGesturesHandler.WindowsHelpText': 'Tekan Ctrl sambil menggulir untuk memperbesar peta',
+  'CooperativeGesturesHandler.MacHelpText': 'Tekan ⌘ sambil menggulir untuk memperbesar peta',
+  'CooperativeGesturesHandler.MobileHelpText': 'Geser peta dengan dua jari',
+};
+
 const fmt = new Intl.NumberFormat('id-ID');
 const fmt1 = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 });
 const n = (v: number | null) => (v === null ? 'tidak tersedia' : fmt.format(v));
@@ -35,6 +49,7 @@ type Region = RegionsFile['regions'][number];
 interface Refs {
   live: LiveData | null;
   region: Region | null;
+  selected: string | null;
   onSelectCell: (id: string) => void;
   openPopup?: (id: string, lngLat?: LngLatLike) => void;
 }
@@ -100,8 +115,11 @@ function preferIndonesianLabels(map: MlMap) {
   }
 }
 
+/** Outline filter for the selected cell ('' matches nothing). */
+const selectedFilter = (id: string | null) => ['==', ['get', 'id'], id ?? ''];
+
 /** Add layers once per style load; update existing sources with setData. */
-function applySources(map: MlMap, live: LiveData | null, region: Region | null, dark: boolean) {
+function applySources(map: MlMap, live: LiveData | null, region: Region | null, dark: boolean, selected: string | null) {
   if (!region || !live) return;
   const cells = cellFc(region, live.cells);
   const geom = { type: 'Feature' as const, properties: {}, geometry: region.geometry };
@@ -128,6 +146,14 @@ function applySources(map: MlMap, live: LiveData | null, region: Region | null, 
       type: 'line',
       source: 'cells',
       paint: { 'line-color': dark ? INK_DARK : TEA, 'line-opacity': 0.35, 'line-width': 0.5 },
+    },
+    {
+      // The cell picked on the map or in "Sel paling berisiko": a heavy ink frame.
+      id: 'cells-selected',
+      type: 'line',
+      source: 'cells',
+      filter: selectedFilter(selected),
+      paint: { 'line-color': dark ? INK_DARK : PEAT, 'line-width': 3 },
     },
     {
       id: 'region-outline',
@@ -176,26 +202,32 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const [ready, setReady] = useState(false);
-  const refs = useRef<Refs>({ live, region, onSelectCell });
+  const refs = useRef<Refs>({ live, region, selected, onSelectCell });
   const darkRef = useRef(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   // Keep the map's closures reading fresh values without recreating it.
   useEffect(() => {
     refs.current.live = live;
     refs.current.region = region;
+    refs.current.selected = selected;
     refs.current.onSelectCell = onSelectCell;
-  }, [live, region, onSelectCell]);
+  }, [live, region, selected, onSelectCell]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const styleUrl = window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK : POSITRON;
+    const phoneMq = window.matchMedia('(pointer: coarse) and (max-width: 959px)');
     const map = new MlMap({
       container,
       style: styleUrl,
       center: [113, -1.2],
       zoom: 4.3,
       attributionControl: { compact: true },
+      locale: LOCALE_ID,
+      // On phones the map fills 62svh of a scrolling page: one finger must
+      // scroll the page, two fingers move the map. Desktop keeps plain gestures.
+      cooperativeGestures: phoneMq.matches,
     });
     mapRef.current = map;
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
@@ -216,12 +248,12 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
 
     const onStyleData = () => {
       if (map.isStyleLoaded()) {
-        applySources(map, refs.current.live, refs.current.region, darkRef.current);
+        applySources(map, refs.current.live, refs.current.region, darkRef.current, refs.current.selected);
         preferIndonesianLabels(map);
       }
     };
     const onLoad = () => {
-      applySources(map, refs.current.live, refs.current.region, darkRef.current);
+      applySources(map, refs.current.live, refs.current.region, darkRef.current, refs.current.selected);
       preferIndonesianLabels(map);
       setReady(true);
     };
@@ -250,8 +282,15 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
       map.setStyle(e.matches ? DARK : POSITRON);
     };
     mq.addEventListener('change', onScheme);
+    // Rotating or resizing across 959px switches the gesture mode on the live map.
+    const onPhone = (e: MediaQueryListEvent) => {
+      if (e.matches) map.cooperativeGestures.enable();
+      else map.cooperativeGestures.disable();
+    };
+    phoneMq.addEventListener('change', onPhone);
     return () => {
       mq.removeEventListener('change', onScheme);
+      phoneMq.removeEventListener('change', onPhone);
       map.off('styledata', onStyleData);
       map.off('load', onLoad);
       map.off('click', 'cells-fill', onCellClick);
@@ -268,8 +307,14 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
   // Data or region changed: refresh sources (no-op before the map is ready).
   useEffect(() => {
     const map = mapRef.current;
-    if (map && ready && live) applySources(map, live, region, darkRef.current);
+    if (map && ready && live) applySources(map, live, region, darkRef.current, refs.current.selected);
   }, [ready, live, region]);
+
+  // Selection changed (map click, list click, or region switch clearing it).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (map && ready && map.getLayer('cells-selected')) map.setFilter('cells-selected', selectedFilter(selected) as never);
+  }, [ready, selected]);
 
   // Region changed: fit to it.
   useEffect(() => {

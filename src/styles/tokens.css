@@ -18,6 +18,7 @@
     --mist: #e6eae4; /* page surface */
     --ember: #f2611d; /* hotspots + focus ring only */
     --sedge: #4f6b43; /* links, data OK */
+    --sedge-sky: #4f6b43; /* sedge drawn on a sky colour: skies stay light in dark mode */
 
     /* Risk and sky scale — data, identical in both modes */
     --sky-0: #d3d3cf;
@@ -50,11 +51,13 @@
       --mist: #1b1410;
       --ink: #eadfd3;
       --tea: #b08b6a;
+      --sedge: #93b283; /* 7.7:1 on deep peat; #4f6b43 is only 3.05:1 */
     }
   }
   [data-theme='dark'] {
     --mist: #1b1410;
     --ink: #eadfd3;
     --tea: #b08b6a;
+    --sedge: #93b283;
   }
 }

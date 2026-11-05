@@ -56,17 +56,18 @@ function readInitialRegion(regions: RegionsFile | null): RegionId {
 
 const byId = <T extends { id: string }>(rows: T[]) => new Map(rows.map((r) => [r.id, r]));
 
-function cellLabel(cell: { center: [number, number] }, score: number | null, cls: string | null): string {
+function cellLabel(cell: { center: [number, number] }, score: number | null, cls: string | null) {
   const [lon, lat] = cell.center;
-  const pos = `${fmt1.format(Math.abs(lat))}° ${lat < 0 ? 'LS' : 'LU'} ${fmt1.format(lon)}° BT`;
+  const pos = `Sel ${fmt1.format(Math.abs(lat))}° ${lat < 0 ? 'LS' : 'LU'} ${fmt1.format(lon)}° BT`;
   const skor = score === null ? 'skor tidak bisa dihitung' : `skor ${fmt.format(Math.round(score))}, ${CLASS_WORD[cls ?? ''] ?? 'tanpa kelas'}`;
-  return `Sel ${pos} — ${skor}`;
+  return { pos, skor };
 }
 
 export function Pantau() {
   const [live, setLive] = useState<LiveData | null>(null);
   const [regionsFile, setRegionsFile] = useState<RegionsFile | null>(null);
   const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [regionId, setRegionId] = useState<RegionId>('kalteng');
   const [selected, setSelected] = useState<string | null>(null);
   const [flyToken, setFlyToken] = useState(0);
@@ -87,17 +88,32 @@ export function Pantau() {
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
+    // Abort on unmount or a newer retry, so a late response never lands.
+    const ctrl = new AbortController();
+    const { signal } = ctrl;
     Promise.all([
-      fetch(`${base}data/live.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
-      fetch(`${base}data/regions.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      fetch(`${base}data/live.json`, { signal }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      fetch(`${base}data/regions.json`, { signal }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
     ])
       .then(([jLive, jRegions]: [LiveData, RegionsFile]) => {
+        if (signal.aborted) return;
         setLive(jLive);
         setRegionsFile(jRegions);
         setRegionId(readInitialRegion(jRegions));
       })
-      .catch(() => setError(true));
-  }, []);
+      .catch(() => {
+        if (!signal.aborted) setError(true);
+      });
+    return () => ctrl.abort();
+  }, [attempt]);
+
+  const retry = () => {
+    setError(false);
+    setAttempt((a) => a + 1);
+    // The retry button unmounts with the error state; keep keyboard focus in
+    // the page by moving it to the new main once React has committed.
+    requestAnimationFrame(() => document.getElementById('konten')?.focus());
+  };
 
   const region = regionsFile?.regions.find((r) => r.id === regionId) ?? null;
   const summary = live?.regions.find((r) => r.id === regionId) ?? null;
@@ -151,11 +167,23 @@ export function Pantau() {
     <>
       <SiteHeader current="pantau" />
       {error ? (
-        <main className="loading">
-          <p>Data live tidak bisa dimuat. Muat ulang halaman, atau cek Kesehatan data nanti.</p>
+        <main className="load-error" id="konten" tabIndex={-1}>
+          <section className="hero sky-panel sky-hatch">
+            <h1 className="risk-sentence">Data live belum bisa dimuat.</h1>
+            <p className="risk-range">
+              Risiko hari ini tidak ditampilkan, karena Bara tidak menebak tanpa data. Periksa sambungan
+              internet, lalu coba lagi.
+            </p>
+            <p className="load-error-actions">
+              <button type="button" className="load-error-retry" onClick={retry}>
+                Coba lagi
+              </button>
+              <a href={`${METODE_URL}#kesehatan`}>Lihat log pengambilan data</a>
+            </p>
+          </section>
         </main>
       ) : (
-        <main className="monitor">
+        <main className="monitor" id="konten" tabIndex={-1}>
           <SkyHero
             regionsFile={regionsFile}
             regionId={regionId}
@@ -216,7 +244,14 @@ export function Pantau() {
                       aria-current={selected === cell.id ? 'true' : undefined}
                       onClick={() => chooseCell(cell.id)}
                     >
-                      {cellLabel(meta ?? { center: [(cell.bbox[0] + cell.bbox[2]) / 2, (cell.bbox[1] + cell.bbox[3]) / 2] }, cell.score, cell.cls)}
+                      <TopCellLabel
+                        {...cellLabel(
+                          meta ?? { center: [(cell.bbox[0] + cell.bbox[2]) / 2, (cell.bbox[1] + cell.bbox[3]) / 2] },
+                          cell.score,
+                          cell.cls,
+                        )}
+                        sky={cell.cls ? (SKY_N[cell.cls] ?? 0) : 0}
+                      />
                     </button>
                   </li>
                 ))}
@@ -233,6 +268,17 @@ export function Pantau() {
           </section>
         </main>
       )}
+    </>
+  );
+}
+
+/** One row of "Sel paling berisiko": the cell's sky colour, where it is, its score. */
+function TopCellLabel({ pos, skor, sky }: { pos: string; skor: string; sky: number }) {
+  return (
+    <>
+      <span className="topcell-swatch" style={{ background: `var(--sky-${sky})` }} aria-hidden="true" />
+      <span>{pos}</span>
+      <span className="topcell-score">{skor}</span>
     </>
   );
 }
@@ -369,7 +415,7 @@ function SkyHero({ regionsFile, regionId, onChooseRegion, live, summary, nowMs, 
             <Sourced
               value={`Rentang ${fmt.format(Math.round(summary.range![0]))}–${fmt.format(
                 Math.round(summary.range![1]),
-              )} dari 100, keyakinan ${summary.confidence}.`}
+              )} dari\u00A0100, keyakinan ${summary.confidence}.`}
               source={SCORE_SOURCE}
             />
           </p>
@@ -392,19 +438,23 @@ function SkyHero({ regionsFile, regionId, onChooseRegion, live, summary, nowMs, 
 function HealthRow({ rec }: { rec: SourceRecord }) {
   const count = rec.rows === null ? null : fmt.format(rec.rows);
   const unit = rec.id === 'open-meteo' ? 'sel cuaca' : 'titik';
-  let text: string;
-  if (rec.status === 'ok') text = `${rec.name}: ${count} ${unit}, ${relativeId(rec.fetchedAt)}`;
-  else if (rec.status === 'empty') text = `${rec.name}: berkas kosong (0 ${unit}), ${relativeId(rec.fetchedAt)}`;
-  else if (rec.status === 'stale')
-    text = `${rec.name}: gagal, memakai snapshot ${relativeId(rec.fetchedAt)}`;
-  else text = `${rec.name}: gagal, tidak ada snapshot.`;
+  let detail: string;
+  if (rec.status === 'ok') detail = `${count} ${unit}, ${relativeId(rec.fetchedAt)}`;
+  else if (rec.status === 'empty') detail = `berkas kosong (0 ${unit}), ${relativeId(rec.fetchedAt)}`;
+  else if (rec.status === 'stale') detail = `gagal, memakai snapshot ${relativeId(rec.fetchedAt)}`;
+  else detail = 'gagal, tidak ada snapshot.';
   const dot = rec.status === 'ok' ? 'dot' : rec.status === 'empty' ? 'dot dot-empty' : 'dot dot-failed';
+  // Name on its own line, status underneath: five sources scan as a list
+  // instead of five run-on sentences that wrap mid-figure.
   return (
     <p className="health-row">
       <span className={dot} aria-hidden="true" />
       <span>
-        {text}
-        {rec.warning ? <strong className="health-warning"> Peringatan: {rec.warning}</strong> : null}
+        <span className="health-name">{rec.name}</span>
+        <span className="health-detail">
+          {detail}
+          {rec.warning ? <strong className="health-warning"> Peringatan: {rec.warning}</strong> : null}
+        </span>
       </span>
     </p>
   );
