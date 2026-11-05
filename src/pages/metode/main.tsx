@@ -23,6 +23,13 @@ const STATUS_WORD: Record<SourceStatus, string> = {
   stale: 'basi',
   failed: 'gagal',
 };
+// Same dots as Kesehatan data on Pantau (DESIGN.md: status dot).
+const STATUS_DOT: Record<SourceStatus, string> = {
+  ok: 'dot',
+  empty: 'dot dot-empty',
+  stale: 'dot dot-failed',
+  failed: 'dot dot-failed',
+};
 const wibShort = new Intl.DateTimeFormat('id-ID', {
   day: 'numeric',
   month: 'numeric',
@@ -81,49 +88,49 @@ function LogTable() {
     );
   return (
     <>
-      <table>
-        <caption className="sourced-meta" style={{ textAlign: 'start' }}>
-          20 baris terakhir berkas <span className="num">data/fetch-log.jsonl</span>. Status per sumber pada saat
-          pengambilan.
-        </caption>
-      <thead>
-        <tr>
-          <th scope="col">Waktu (WIB)</th>
-          {cols.map((c) => (
-            <th scope="col" key={c}>
-              {SOURCE_SHORT[c] ?? c}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {lines.map((l) => (
-          <tr key={l.generatedAt}>
-            <td className="num">{shortWib(l.generatedAt)}</td>
-            {cols.map((c) => {
-              const s = l.sources.find((x) => x.id === c);
-              return (
-                <td
-                  key={c}
-                  className={`num log-status-${s?.status ?? 'failed'}`}
-                  title={s?.warning ?? undefined}
-                >
-                  {s ? STATUS_WORD[s.status] : '—'}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
+      <div className="table-scroll" role="region" aria-labelledby="log-caption" tabIndex={0}>
+        <table className="log-table">
+          <caption id="log-caption" className="sourced-meta">
+            20 baris terakhir berkas <span className="num">data/fetch-log.jsonl</span>. Status per sumber pada saat
+            pengambilan.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Waktu (WIB)</th>
+              {cols.map((c) => (
+                <th scope="col" key={c}>
+                  {SOURCE_SHORT[c] ?? c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((l) => (
+              <tr key={l.generatedAt}>
+                <td className="num">{shortWib(l.generatedAt)}</td>
+                {cols.map((c) => {
+                  const s = l.sources.find((x) => x.id === c);
+                  const status = s?.status ?? 'failed';
+                  return (
+                    <td key={c} className="log-status" title={s?.warning ?? undefined}>
+                      <span className={STATUS_DOT[status]} aria-hidden="true" />
+                      {s ? STATUS_WORD[s.status] : '—'}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
         </table>
+      </div>
       {warnings.length > 0 ? (
-        <p className="log-warnings">
+        <ul className="log-warnings">
           {warnings.map((w) => (
-            <strong key={w} className="log-warning">
-              Peringatan: {w}
-            </strong>
+            <li key={w}>
+              <strong>Peringatan:</strong> {w}
+            </li>
           ))}
-        </p>
+        </ul>
       ) : null}
     </>
   );
@@ -241,7 +248,7 @@ function Metode() {
 
         <section>
           <h2>Data yang dipakai</h2>
-          <div className="table-scroll" role="region" aria-label="Tabel sumber data (bisa digeser mendatar)">
+          <div className="table-scroll" role="region" aria-label="Tabel sumber data (bisa digeser mendatar)" tabIndex={0}>
             <table>
               <thead>
                 <tr>

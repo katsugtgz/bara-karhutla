@@ -49,28 +49,33 @@
     min-inline-size: 40rem;
   }
 
-  .metode .log-status-ok {
-    color: var(--sedge);
+  /* The log table is narrow enough for desktop; it only scrolls on phones. */
+  .metode .table-scroll .log-table {
+    min-inline-size: 30rem;
   }
 
-  .metode .log-status-failed,
-  .metode .log-status-stale {
-    color: var(--ember);
+  .metode caption {
+    text-align: start;
+    font-size: 0.875rem;
+    padding-block-end: 0.25rem;
   }
 
-  .metode .log-status-empty {
-    color: var(--tea);
+  /* Status is the dot plus a word, never colour alone (DESIGN.md: status dot).
+     Ember stays reserved for hotspots and the focus ring. */
+  .metode .log-status {
+    white-space: nowrap;
   }
 
   .metode .log-warnings {
-    display: grid;
-    gap: 0.35rem;
+    list-style: none;
+    padding: 0 0 0 0.75rem;
+    border-inline-start: 3px solid var(--tea);
     margin-block: 0.5rem 1rem;
+    font-size: 0.875rem;
   }
 
-  .metode .log-warning {
-    color: var(--ember);
-    font-weight: 700;
+  .metode .log-warnings li {
+    margin-block: 0.35rem;
   }
 
   /* Vertical rhythm (review 17): air under the h1, 3rem before every h2,
