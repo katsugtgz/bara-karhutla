@@ -309,11 +309,15 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
+      /* Stops are tied to the text column's right edge (its offset + 30rem),
+         not to percentages: at 1024 px the old 42%/62% stops faded out
+         mid-column and body text ran over the brightest hotspot columns. */
+      --col-end: calc(clamp(1.5rem, 18vw, 26rem) + 30rem);
       background: linear-gradient(
         to right,
-        color-mix(in srgb, var(--live-sky, var(--sky-1)) 90%, transparent) 0%,
-        color-mix(in srgb, var(--live-sky, var(--sky-1)) 78%, transparent) 42%,
-        transparent 62%
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 90%, transparent) 0,
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 84%, transparent) var(--col-end),
+        transparent calc(var(--col-end) + 10rem)
       );
     }
 
