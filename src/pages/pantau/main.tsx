@@ -412,7 +412,7 @@ function SkyHero({ regionsFile, regionId, onChooseRegion, live, summary, nowMs, 
             <Sourced
               value={`Rentang ${fmt.format(Math.round(summary.range![0]))}–${fmt.format(
                 Math.round(summary.range![1]),
-              )} dari 100, keyakinan ${summary.confidence}.`}
+              )} dari\u00A0100, keyakinan ${summary.confidence}.`}
               source={SCORE_SOURCE}
             />
           </p>
