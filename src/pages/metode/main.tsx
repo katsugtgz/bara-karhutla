@@ -320,29 +320,27 @@ function Metode() {
                   <td className="num">mingguan</td>
                   <td>Belum tersambung ke skor; dipakai untuk pembanding kronologi.</td>
                 </tr>
-              <tr>
-                <td>MPeat / peatfr (Dr. Adilan Mahdiyasa)</td>
-                <td>Model kekeringan gambut (belum dipakai)</td>
-                <td>—</td>
-                <td>—</td>
-                <td>Menunggu izin dan lisensi dari pemilik kode sebelum diterjemahkan atau dijalankan.</td>
-              </tr>
-              <tr>
-                <td>Natural Earth admin-1</td>
-                <td>Batas wilayah dan grid sel</td>
-                <td>
-                  <a
-                    href="https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    natural-earth-vector (GitHub)
-                  </a>
-                </td>
-                <td className="num">sekali (berkas statis)</td>
-                <td>Domain publik; disederhanakan 8% dengan mapshaper.</td>
-              </tr>
-            </tbody>
+                <tr>
+                  <td>MPeat / peatfr (Dr. Adilan Mahdiyasa)</td>
+                  <td>Model kekeringan gambut (belum dipakai)</td>
+                  <td>—</td>
+                  <td>Menunggu izin dan lisensi dari pemilik kode sebelum diterjemahkan atau dijalankan.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <a
+                      href="https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Natural Earth admin-1
+                    </a>
+                  </td>
+                  <td>Batas wilayah dan grid sel</td>
+                  <td className="num">sekali (berkas statis)</td>
+                  <td>Domain publik (natural-earth-vector di GitHub); disederhanakan 8% dengan mapshaper.</td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <p>
