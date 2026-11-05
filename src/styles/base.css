@@ -114,8 +114,10 @@
     }
   }
 
-  /* "no data" hatch, drawn over --sky-0 */
+  /* "no data" hatch, drawn over --sky-0. Its ink is peat in both modes:
+     the dark-mode ink (#EADFD3) is 1.14:1 on the light grey sky-0. */
   .sky-hatch {
+    --sky-ink: var(--peat);
     background-image: repeating-linear-gradient(
       45deg,
       transparent 0 6px,
