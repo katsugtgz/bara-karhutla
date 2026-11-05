@@ -379,7 +379,7 @@ function Metode() {
         </section>
 
         <section>
-          <h2>Kesehatan pengambilan data</h2>
+          <h2 id="kesehatan">Kesehatan pengambilan data</h2>
           <p>
             Setiap kali pipeline live berjalan (terjadwal tiap 3 jam), status tiap sumber dicatat ke berkas
             log. Gagal tidak pernah dicatat sebagai nol: sumber gagal memakai snapshot terakhir dan

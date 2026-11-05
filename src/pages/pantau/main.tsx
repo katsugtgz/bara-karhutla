@@ -67,6 +67,7 @@ export function Pantau() {
   const [live, setLive] = useState<LiveData | null>(null);
   const [regionsFile, setRegionsFile] = useState<RegionsFile | null>(null);
   const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [regionId, setRegionId] = useState<RegionId>('kalteng');
   const [selected, setSelected] = useState<string | null>(null);
   const [flyToken, setFlyToken] = useState(0);
@@ -97,7 +98,12 @@ export function Pantau() {
         setRegionId(readInitialRegion(jRegions));
       })
       .catch(() => setError(true));
-  }, []);
+  }, [attempt]);
+
+  const retry = () => {
+    setError(false);
+    setAttempt((a) => a + 1);
+  };
 
   const region = regionsFile?.regions.find((r) => r.id === regionId) ?? null;
   const summary = live?.regions.find((r) => r.id === regionId) ?? null;
@@ -151,8 +157,20 @@ export function Pantau() {
     <>
       <SiteHeader current="pantau" />
       {error ? (
-        <main className="loading">
-          <p>Data live tidak bisa dimuat. Muat ulang halaman, atau cek Kesehatan data nanti.</p>
+        <main className="load-error">
+          <section className="hero sky-panel sky-hatch">
+            <h1 className="risk-sentence">Data live belum bisa dimuat.</h1>
+            <p className="risk-range">
+              Risiko hari ini tidak ditampilkan, karena Bara tidak menebak tanpa data. Periksa sambungan
+              internet, lalu coba lagi.
+            </p>
+            <p className="load-error-actions">
+              <button type="button" className="load-error-retry" onClick={retry}>
+                Coba lagi
+              </button>
+              <a href={`${METODE_URL}#kesehatan`}>Lihat log pengambilan data</a>
+            </p>
+          </section>
         </main>
       ) : (
         <main className="monitor">

@@ -219,8 +219,38 @@
     color: var(--tea);
   }
 
-  .loading {
-    padding: 1.5rem 16px;
+  /* ---- live data failed to load: a full no-data sky with a way forward ---- */
+  .load-error .hero {
+    --sky-ink: var(--peat); /* sky-0 stays light in dark mode */
+    min-block-size: calc(100dvh - 49px);
+    padding: 2rem 16px;
+    border: 0;
+
+    > * {
+      max-inline-size: 34rem;
+    }
+  }
+
+  .load-error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-block-start: 1.5rem;
+
+    a {
+      color: inherit;
+    }
+  }
+
+  .load-error-retry {
+    min-block-size: 44px;
+    padding: 0.6rem 1.25rem;
+    border: 0;
+    background: var(--peat);
+    color: var(--sky-4-ink);
+    font-weight: 700;
+    cursor: pointer;
   }
 
   /* ---- maplibre popup, styled with the tokens ---- */
