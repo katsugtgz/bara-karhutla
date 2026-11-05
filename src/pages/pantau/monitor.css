@@ -61,6 +61,17 @@
     color: var(--sky-ink, var(--ink));
   }
 
+  /* The info button sits on the sky, which stays light in dark mode; the
+     dark-mode tea (#B08B6A) is about 1.7:1 there. Follow the sky's ink. */
+  .hero .sourced-btn {
+    color: currentColor;
+    opacity: 0.8;
+  }
+
+  .hero .sourced-btn:hover {
+    opacity: 1;
+  }
+
   .risk-stale {
     margin-block-start: 0.5rem;
     font-size: 0.875rem;
