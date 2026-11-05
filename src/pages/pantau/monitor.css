@@ -258,6 +258,13 @@
       border-block: 1px solid var(--rule);
     }
 
+    /* Bottom-left collided with the attribution, which MapLibre shows
+       expanded on load; the top-left corner is free (zoom is top-right). */
+    .legend {
+      inset-block: 10px auto;
+      inset-inline-start: 10px;
+    }
+
     .panel,
     .hero {
       overflow: visible;
