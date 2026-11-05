@@ -80,9 +80,14 @@
     text-underline-offset: 0.15em;
   }
 
+  /* Ember ring plus a keyline in the element's own ink. Ember alone is
+     1.0:1 on sky-3 and under 3:1 on mist; the keyline fills the offset gap
+     so the ring reads on every sky. Forced-colors mode drops the shadow and
+     keeps the outline. */
   :focus-visible {
-    outline: 2px solid var(--ember);
+    outline: 3px solid var(--ember);
     outline-offset: 2px;
+    box-shadow: 0 0 0 2px currentColor;
   }
 
   button,

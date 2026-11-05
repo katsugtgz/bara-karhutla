@@ -135,8 +135,13 @@ table, limitations, and open questions. Ordinary rules and tables, no cards.
 - **Region switch**: a native `<select>` styled with the tokens.
 - **Status dot**: `●` sedge = ok, `●` ember-outlined = empty file, `○` tea hollow = failed
   and on snapshot. Always followed by text.
+- **Focus ring**: 3 px `--ember` outline at 2 px offset, with a 2 px keyline in the
+  element's own ink (`box-shadow: 0 0 0 2px currentColor`) filling the gap. Ember alone
+  is 1.0:1 on `--sky-3` and under 3:1 on mist; the keyline keeps the ring visible on
+  every sky. Forced-colors mode drops the keyline and keeps the outline.
 - Radius: 0 on panels and map, 4 px on buttons and select, 6 px on popovers. No drop
-  shadows except the popover (`0 8px 24px rgb(42 29 21 / .18)`).
+  shadows except the popover (`0 8px 24px rgb(42 29 21 / .18)`); the focus keyline is
+  not a shadow.
 
 ## Motion
 
