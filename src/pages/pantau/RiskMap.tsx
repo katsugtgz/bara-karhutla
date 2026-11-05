@@ -211,6 +211,9 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
       zoom: 4.3,
       attributionControl: { compact: true },
       locale: LOCALE_ID,
+      // On phones the map fills 62svh of a scrolling page: one finger must
+      // scroll the page, two fingers move the map. Desktop keeps plain gestures.
+      cooperativeGestures: window.matchMedia('(pointer: coarse) and (max-width: 959px)').matches,
     });
     mapRef.current = map;
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');

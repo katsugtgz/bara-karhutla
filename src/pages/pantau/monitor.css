@@ -238,6 +238,14 @@
     border-radius: var(--radius-button);
   }
 
+  /* "Geser peta dengan dua jari" hint (phones only), in the site's type and ink. */
+  .maplibregl-cooperative-gesture-screen {
+    background: rgb(42 29 21 / 0.55);
+    color: #fbefe6;
+    font: 700 1.125rem/1.3 var(--font-body);
+    text-align: center;
+  }
+
   /* ---- mobile: sentence, map 62svh, then the rest ---- */
   @media (max-width: 959px) {
     .monitor {
