@@ -54,8 +54,14 @@
     inline-size: max-content;
     max-inline-size: min(20rem, calc(100vw - 16px));
     box-shadow: var(--shadow-popover);
+    /* The popover lives inside its value in the DOM, so it would inherit a
+       headline's face (Kisah's big figures, the risk sentence). Reset it. */
+    font-family: var(--font-body);
     font-size: 0.875rem;
+    font-weight: 400;
+    font-variation-settings: normal;
     line-height: 1.45;
+    white-space: normal;
     text-align: start;
     overscroll-behavior: contain;
   }
