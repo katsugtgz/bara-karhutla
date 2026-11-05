@@ -77,8 +77,9 @@ DESIGN.md rule broken; **low** = finish and rhythm.
   mode (Kisah dark: the canvas false positive above).
 - No horizontal scroll on any page at 360px.
 - Screenshots: before and after sets were captured locally with the same agent-browser
-  script and compared one by one. They are not committed (about 27 MB of PNGs); re-run
-  the capture against any build to reproduce them.
+  script, `docs/polish/capture.sh`, and compared one by one. The PNGs are not committed
+  (about 27 MB). To reproduce a set: `npm run build && npx vite preview --port 4610`, then
+  `docs/polish/capture.sh http://localhost:4610 <out-dir>` (needs agent-browser).
 
 ## Commits
 
