@@ -185,6 +185,11 @@
   .kisah-live {
     border-block-start: 1px solid var(--rule);
     padding-block-start: 0.75rem;
+
+    /* fallback link sits on the sky, which stays light in dark mode */
+    > a {
+      color: inherit;
+    }
   }
 
   .kisah-actions {
@@ -316,7 +321,7 @@
     stroke-width: 2;
   }
   .peat-water {
-    fill: var(--sedge);
+    fill: var(--sedge-sky);
     opacity: 0.35;
     /* final (drained) state — also the static fallback */
     transform: translateY(48px);
@@ -336,7 +341,7 @@
     fill: var(--peat);
   }
   .peat-label-water {
-    fill: var(--sedge);
+    fill: var(--sedge-sky);
   }
   .peat-label-peat,
   .peat-label-ember {

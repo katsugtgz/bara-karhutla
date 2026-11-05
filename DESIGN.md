@@ -46,7 +46,9 @@ with a text label, never colour alone.
 | (no data) | `--sky-0` | `#D3D3CF` with diagonal hatch | peat |
 
 Dark mode (`prefers-color-scheme: dark` plus a `data-theme` override): surface
-`#1B1410` (deep peat), ink `#EADFD3`, tea `#B08B6A`. The sky tokens stay the same,
+`#1B1410` (deep peat), ink `#EADFD3`, tea `#B08B6A`, sedge `#93B283` (7.7:1 on the
+surface; the light-mode sedge is only 3.05:1 there). Anything drawn on a sky colour
+uses `--sedge-sky` (`#4F6B43` in both modes), because the skies stay light. The sky tokens stay the same,
 because they are data, but sky-1 and sky-2 panels switch to peat text.
 
 ## Type
