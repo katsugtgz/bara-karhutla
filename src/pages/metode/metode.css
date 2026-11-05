@@ -38,6 +38,10 @@
     line-height: 1.7;
     font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
+
+    .term {
+      white-space: nowrap;
+    }
   }
 
   /* Tables scroll horizontally instead of crushing on narrow screens. */

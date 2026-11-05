@@ -159,11 +159,19 @@ function Metode() {
             <span className="num">55 × 55</span> km). Setiap sel diberi skor{' '}
             <span className="num">0–100</span> dari tiga sinyal:
           </p>
+          {/* Each term stays whole, so a narrow screen breaks between terms
+              instead of leaving "· r )" alone on the last line. */}
           <code className="formula">
-            skor = 100 × ({' '}
-            <Sourced value={fmtWeight.format(w.hotspots)} source={DIHITUNG} /> · h +{' '}
-            <Sourced value={fmtWeight.format(w.dryDays)} source={DIHITUNG} /> · d +{' '}
-            <Sourced value={fmtWeight.format(w.rain30)} source={DIHITUNG} /> · r )
+            <span className="term">skor = 100 × (</span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.hotspots)} source={DIHITUNG} /> · h +
+            </span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.dryDays)} source={DIHITUNG} /> · d +
+            </span>{' '}
+            <span className="term">
+              <Sourced value={fmtWeight.format(w.rain30)} source={DIHITUNG} /> · r )
+            </span>
           </code>
           <p>
             <strong>h — titik panas 24 jam.</strong> Jumlah lokasi unik (dibulatkan ke sekitar{' '}
