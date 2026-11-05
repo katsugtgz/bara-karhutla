@@ -181,16 +181,34 @@
     padding: 0;
   }
 
+  /* Same rhythm as the signal rows above: flush with the 16 px gutter,
+     label left, figure right. The swatch is the cell's sky (never alone:
+     the class word follows the score). */
   .topcell-btn {
-    display: block;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0.6rem;
     inline-size: 100%;
     text-align: start;
     background: none;
     border: 0;
     border-block-end: 1px solid var(--rule);
-    padding: 0.55rem 0.25rem;
+    border-radius: 0;
+    padding: 0.55rem 0;
     cursor: pointer;
     font-variant-numeric: tabular-nums;
+  }
+
+  .topcell-swatch {
+    inline-size: 0.8em;
+    block-size: 0.8em;
+    border: 1px solid rgb(42 29 21 / 0.25);
+    translate: 0 0.08em;
+  }
+
+  .topcell-score {
+    text-align: end;
   }
 
   .topcell-btn:hover,

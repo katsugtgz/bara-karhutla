@@ -56,11 +56,11 @@ function readInitialRegion(regions: RegionsFile | null): RegionId {
 
 const byId = <T extends { id: string }>(rows: T[]) => new Map(rows.map((r) => [r.id, r]));
 
-function cellLabel(cell: { center: [number, number] }, score: number | null, cls: string | null): string {
+function cellLabel(cell: { center: [number, number] }, score: number | null, cls: string | null) {
   const [lon, lat] = cell.center;
-  const pos = `${fmt1.format(Math.abs(lat))}° ${lat < 0 ? 'LS' : 'LU'} ${fmt1.format(lon)}° BT`;
+  const pos = `Sel ${fmt1.format(Math.abs(lat))}° ${lat < 0 ? 'LS' : 'LU'} ${fmt1.format(lon)}° BT`;
   const skor = score === null ? 'skor tidak bisa dihitung' : `skor ${fmt.format(Math.round(score))}, ${CLASS_WORD[cls ?? ''] ?? 'tanpa kelas'}`;
-  return `Sel ${pos} — ${skor}`;
+  return { pos, skor };
 }
 
 export function Pantau() {
@@ -234,7 +234,14 @@ export function Pantau() {
                       aria-current={selected === cell.id ? 'true' : undefined}
                       onClick={() => chooseCell(cell.id)}
                     >
-                      {cellLabel(meta ?? { center: [(cell.bbox[0] + cell.bbox[2]) / 2, (cell.bbox[1] + cell.bbox[3]) / 2] }, cell.score, cell.cls)}
+                      <TopCellLabel
+                        {...cellLabel(
+                          meta ?? { center: [(cell.bbox[0] + cell.bbox[2]) / 2, (cell.bbox[1] + cell.bbox[3]) / 2] },
+                          cell.score,
+                          cell.cls,
+                        )}
+                        sky={cell.cls ? (SKY_N[cell.cls] ?? 0) : 0}
+                      />
                     </button>
                   </li>
                 ))}
@@ -251,6 +258,17 @@ export function Pantau() {
           </section>
         </main>
       )}
+    </>
+  );
+}
+
+/** One row of "Sel paling berisiko": the cell's sky colour, where it is, its score. */
+function TopCellLabel({ pos, skor, sky }: { pos: string; skor: string; sky: number }) {
+  return (
+    <>
+      <span className="topcell-swatch" style={{ background: `var(--sky-${sky})` }} aria-hidden="true" />
+      <span>{pos}</span>
+      <span className="topcell-score">{skor}</span>
     </>
   );
 }
