@@ -443,4 +443,11 @@
   .kisah .sourced-btn:focus-visible {
     opacity: 1;
   }
+
+  /* On the one-number screens the button would scale to a 4.5rem circle
+     that competes with the figure: keep it small and set it high. */
+  .kisah-big .sourced-btn {
+    font-size: max(1.125rem, 0.4em);
+    vertical-align: super;
+  }
 }
