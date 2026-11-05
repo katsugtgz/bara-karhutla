@@ -157,7 +157,7 @@ export function Pantau() {
     <>
       <SiteHeader current="pantau" />
       {error ? (
-        <main className="load-error">
+        <main className="load-error" id="konten" tabIndex={-1}>
           <section className="hero sky-panel sky-hatch">
             <h1 className="risk-sentence">Data live belum bisa dimuat.</h1>
             <p className="risk-range">
@@ -173,7 +173,7 @@ export function Pantau() {
           </section>
         </main>
       ) : (
-        <main className="monitor">
+        <main className="monitor" id="konten" tabIndex={-1}>
           <SkyHero
             regionsFile={regionsFile}
             regionId={regionId}

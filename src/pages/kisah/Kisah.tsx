@@ -173,7 +173,7 @@ function Kisah() {
 
       <SiteHeader current="kisah" />
 
-      <main className="kisah-main">
+      <main className="kisah-main" id="konten" tabIndex={-1}>
         {/* 1 — Pembuka */}
         <section ref={(el) => void (sectionRefs.current[0] = el)} className="kisah-section">
           <div className="kisah-block">

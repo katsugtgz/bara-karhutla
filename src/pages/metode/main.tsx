@@ -145,7 +145,7 @@ function Metode() {
   return (
     <>
       <SiteHeader current="metode" />
-      <main className="page-main prose metode">
+      <main className="page-main prose metode" id="konten" tabIndex={-1}>
         <h1>Metode &amp; sumber</h1>
         <p>
           Skor risiko v0 dihitung oleh kode yang bisa diuji (src/lib/risk.ts), bukan oleh penilaian AI.
