@@ -72,10 +72,13 @@
     color: var(--tea);
   }
 
+  /* Tea, not ember: ember is only for hotspots and the focus ring, and
+     ember text on mist is 2.65:1. Tea is 7:1 in light and 5.9:1 in dark. */
   .sourced-tag {
     display: inline-block;
-    border: 1px solid var(--ember);
-    color: var(--ember);
+    border: 1px solid var(--tea);
+    color: var(--tea);
+    font-weight: 700;
     border-radius: var(--radius-button);
     padding: 0 0.4em;
     font-size: 0.75rem;
