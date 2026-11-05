@@ -11,6 +11,8 @@ export interface SourceRecord {
   attemptedAt: string; // ISO time of this attempt
   rows: number | null; // rows after Indonesia filter; null if unknown
   error?: string;
+  note?: string; // optional pipeline note, e.g. "2 batch URL per 100 sel"
+  warning?: string; // data-quality warning to surface in the UI, e.g. sudden row drop
 }
 
 export interface Hotspot {
@@ -37,8 +39,8 @@ export interface CellRisk {
   id: string; // `${regionId}:${row}:${col}`
   regionId: string;
   bbox: [number, number, number, number]; // [w, s, e, n]
-  hotspots24h: number; // non-low-confidence detections in cell, last 24h
-  hotspots7d: number;
+  hotspots24h: number | null; // unique ~1 km locations with ≥1 non-low-confidence detection, last 24h; null = satellite data too old
+  hotspots7d: number | null; // unique (location, UTC date) pairs, last 7 days; null = satellite data too old
   weather: CellWeather;
   score: number | null; // 0–100
   range: [number, number] | null;
@@ -56,8 +58,8 @@ export interface RegionSummary {
   range: [number, number] | null;
   cls: CellRisk['cls'];
   confidence: CellRisk['confidence'];
-  hotspots24h: number;
-  hotspots7d: number;
+  hotspots24h: number | null;
+  hotspots7d: number | null;
   medianDryDays: number | null;
   medianRain30: number | null;
 }

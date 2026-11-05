@@ -1,5 +1,5 @@
 /* Layer order first — every other file uses these layers. */
-@layer reset, tokens, base, components, pages;
+@layer reset, vendor, tokens, base, components, pages;
 
 /* Registered so the sky panel's background can transition between data colours. */
 @property --sky {

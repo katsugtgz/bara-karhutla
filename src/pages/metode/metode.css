@@ -1,0 +1,108 @@
+@layer pages {
+  .metode table {
+    border-collapse: collapse;
+    inline-size: 100%;
+    font-size: 0.875rem;
+    margin-block: 0.75rem 1.5rem;
+  }
+
+  .metode th,
+  .metode td {
+    border-block-end: 1px solid var(--rule);
+    padding: 0.4rem 0.5rem 0.4rem 0;
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .metode th {
+    font-weight: 700;
+    color: var(--tea);
+  }
+
+  .metode td:first-child,
+  .metode th:first-child {
+    padding-inline-start: 0;
+  }
+
+  /* DESIGN.md forbids monospace: code/formula text stays in the body face. */
+  .metode code {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    overflow-wrap: break-word;
+  }
+
+  /* The formula block: body font, tabular numerals, left-aligned with room to breathe. */
+  .metode .formula {
+    display: block;
+    padding: 0.75rem 0;
+    line-height: 1.7;
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tables scroll horizontally instead of crushing on narrow screens. */
+  .metode .table-scroll {
+    overflow-x: auto;
+  }
+
+  .metode .table-scroll table {
+    min-inline-size: 40rem;
+  }
+
+  .metode .log-status-ok {
+    color: var(--sedge);
+  }
+
+  .metode .log-status-failed,
+  .metode .log-status-stale {
+    color: var(--ember);
+  }
+
+  .metode .log-status-empty {
+    color: var(--tea);
+  }
+
+  .metode .log-warnings {
+    display: grid;
+    gap: 0.35rem;
+    margin-block: 0.5rem 1rem;
+  }
+
+  .metode .log-warning {
+    color: var(--ember);
+    font-weight: 700;
+  }
+
+  /* Vertical rhythm (review 17): air under the h1, 3rem before every h2,
+     1.5rem before each h3, 1rem paragraphs. Sections need no extra gap: each
+     opens with an h2. */
+  .metode h1 {
+    margin-block: 0 0.5rem;
+  }
+
+  .metode h2 {
+    font-size: 1.5rem;
+    margin-block: 3rem 0.75rem;
+  }
+
+  .metode h3 {
+    font-size: 1.125rem;
+    margin-block: 1.5rem 0.5rem;
+  }
+
+  .metode p {
+    margin-block: 1rem;
+  }
+
+  .metode p + p {
+    margin-block-start: 1rem;
+  }
+
+  .metode ul {
+    margin-block: 1rem;
+  }
+
+  .metode li {
+    margin-block: 0.3rem;
+  }
+}

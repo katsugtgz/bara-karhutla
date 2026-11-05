@@ -135,3 +135,20 @@ describe('summarizeRegion', () => {
     expect(s.medianDryDays).toBeNull();
   });
 });
+
+describe('summarizeRegion hotspot totals', () => {
+  const cell = (h: number | null) => ({
+    score: 10,
+    range: [4, 16] as [number, number],
+    confidence: 'tinggi' as const,
+    hotspots24h: h,
+    hotspots7d: h,
+    weather: { rain30: 100, dryDays: 1, daily: [] },
+  });
+  it('sums known counts', () => {
+    expect(summarizeRegion([cell(2), cell(3)]).hotspots24h).toBe(5);
+  });
+  it('is unknown, not smaller, when any cell count is unknown', () => {
+    expect(summarizeRegion([cell(2), cell(null)]).hotspots24h).toBeNull();
+  });
+});

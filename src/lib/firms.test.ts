@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { inIndonesia, mapConf, parseFirmsCsv } from './firms';
+import { FirmsFormatError, inIndonesia, mapConf, parseFirmsCsv, validateFirmsHeader } from './firms';
+
+const VIIRS_HEADER =
+  'latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,confidence,version,bright_ti5,frp,daynight';
 
 const VIIRS_CSV = [
-  'latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,confidence,version,bright_ti5,frp,daynight',
+  VIIRS_HEADER,
   '-2.5,113.7,344.2,1.2,1.1,2026-11-04,1830,N,high,2.0RTW,301.5,12.3,D',
   '-0.9,101.5,330.0,1.3,1.2,2026-11-04, 615,N20,nominal,2.0RTW,295.0,8.1,N',
   '1.2,99.1,322.0,1.1,1.0,2026-11-03,2359,N21,low,2.0RTW,290.0,0.0,N',
@@ -65,8 +68,26 @@ describe('parseFirmsCsv', () => {
     expect(rows.map((r) => r.sat)).toEqual(['Terra', 'Aqua', 'Aqua']);
   });
 
-  it('empty input yields empty list', () => {
-    expect(parseFirmsCsv('', 'x')).toEqual([]);
-    expect(parseFirmsCsv('latitude,longitude\n', 'x')).toEqual([]);
+  it('acq_time tolerant: left-pads to 4 digits ("4" → 00:04, "615" → 06:15)', () => {
+    const csv = [
+      VIIRS_HEADER,
+      '-2.5,113.7,344.2,1.2,1.1,2026-11-04,4,N,high,2.0RTW,301.5,12.3,D',
+      '-2.6,113.8,344.2,1.2,1.1,2026-11-04,615,N,high,2.0RTW,301.5,12.3,D',
+    ].join('\n');
+    expect(parseFirmsCsv(csv, 'firms-viirs-snpp').map((r) => r.t)).toEqual([
+      '2026-11-04T00:04:00Z',
+      '2026-11-04T06:15:00Z',
+    ]);
+  });
+
+  it('HTML error page with HTTP 200: invalid header, must throw — never zero rows', () => {
+    const html = '<html><body><h1>404 Not Found</h1><p>Page not found.</p></body></html>';
+    expect(() => parseFirmsCsv(html, 'x')).toThrow(FirmsFormatError);
+    expect(() => validateFirmsHeader(html)).toThrow(/latitude/);
+  });
+
+  it('empty body is invalid (no header at all); header-only is valid and empty', () => {
+    expect(() => parseFirmsCsv('', 'x')).toThrow(FirmsFormatError);
+    expect(parseFirmsCsv(`${VIIRS_HEADER}\n`, 'x')).toEqual([]);
   });
 });

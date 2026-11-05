@@ -72,8 +72,8 @@ interface CellRisk {
   id: string;                // `${regionId}:${row}:${col}`
   regionId: string;
   bbox: [number, number, number, number]; // [w, s, e, n]
-  hotspots24h: number;       // non-low-confidence detections in cell, last 24h
-  hotspots7d: number;
+  hotspots24h: number | null; // unique ~1 km (0.01°) locations with ≥1 non-low-confidence detection, last 24h; null = satellite data too old
+  hotspots7d: number | null;  // unique (location, UTC date) pairs, last 7 days
   weather: CellWeather;
   score: number | null;      // 0–100
   range: [number, number] | null;
@@ -89,7 +89,7 @@ interface RegionSummary {
   range: [number, number] | null;
   cls: CellRisk['cls'];
   confidence: CellRisk['confidence'];
-  hotspots24h: number; hotspots7d: number;
+  hotspots24h: number | null; hotspots7d: number | null; // null if any cell is unknown
   medianDryDays: number | null; medianRain30: number | null;
 }
 
@@ -160,7 +160,14 @@ classes: <25 rendah, 25–<50 sedang, 50–<75 tinggi, >=75 sangat-tinggi
 4. Compute cells and regions with src/lib/risk.ts. Write `public/data/live.json`
    (minified). Also append one line to `public/data/fetch-log.jsonl`: the generatedAt
    time plus source statuses, keeping the last 500 lines.
-5. Exit code 0 even if sources fail. The JSON tells the truth. Exit non-zero only on a
+5. Freshness: reused (stale) data is trusted only while young. Satellite data older than
+   6 h and weather older than 48 h count as *missing* signals (null), never as numbers,
+   because old hotspots would read as "0 in the last 24 h" (`signalFreshness` in
+   src/lib/live.ts).
+6. A FIRMS response without the FIRMS header (e.g. an HTML error page with HTTP 200) is a
+   failed fetch, not an empty file. A feed whose rows drop below 10% of a previous ≥500
+   gets a `warning`.
+7. Exit code 0 even if sources fail. The JSON tells the truth. Exit non-zero only on a
    programming error.
 
 ## CI/CD (.github/workflows)

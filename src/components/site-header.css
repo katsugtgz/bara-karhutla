@@ -30,6 +30,22 @@
       padding-block: 0.25rem;
     }
 
+    .nav-short {
+      display: none;
+    }
+
+    @media (max-width: 30rem) {
+      gap: 1rem;
+
+      .nav-long {
+        display: none;
+      }
+
+      .nav-short {
+        display: inline;
+      }
+    }
+
     a[aria-current='page'] {
       color: var(--ink);
       text-decoration: underline;

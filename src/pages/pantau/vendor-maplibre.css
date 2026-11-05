@@ -1,0 +1,2 @@
+/* MapLibre's stylesheet goes in a low layer so page rules can override it. */
+@import 'maplibre-gl/dist/maplibre-gl.css' layer(vendor);

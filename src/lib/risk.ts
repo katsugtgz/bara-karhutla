@@ -91,8 +91,8 @@ export interface RegionStats {
   range: [number, number] | null;
   cls: RiskClass | null;
   confidence: Confidence;
-  hotspots24h: number;
-  hotspots7d: number;
+  hotspots24h: number | null;
+  hotspots7d: number | null;
   medianDryDays: number | null;
   medianRain30: number | null;
 }
@@ -125,14 +125,18 @@ export function summarizeRegion(
     return v.length === 0 ? null : percentile(v, 50);
   };
 
+  // A total is unknown (null), not smaller, when any cell's count is unknown.
+  const total = (xs: (number | null)[]) =>
+    xs.some((x) => x === null) ? null : xs.reduce<number>((s, x) => s + (x as number), 0);
+
   const score = scored.length === 0 ? null : percentile(scored.map((c) => c.score!), 75);
   return {
     score,
     range: scored.length === 0 ? null : [percentile(lows, 75), percentile(highs, 75)],
     cls: score === null ? null : classify(score),
     confidence,
-    hotspots24h: cells.reduce((s, c) => s + c.hotspots24h, 0),
-    hotspots7d: cells.reduce((s, c) => s + c.hotspots7d, 0),
+    hotspots24h: total(cells.map((c) => c.hotspots24h)),
+    hotspots7d: total(cells.map((c) => c.hotspots7d)),
     medianDryDays: median(cells.map((c) => c.weather.dryDays)),
     medianRain30: median(cells.map((c) => c.weather.rain30)),
   };

@@ -3,3 +3,5 @@
 node_modules
 dist
 .cache/
+public/data/fetch-log.jsonl
+public/data/live.json

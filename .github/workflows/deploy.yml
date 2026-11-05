@@ -20,6 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: github-pages
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
@@ -29,7 +30,8 @@ jobs:
       - run: npm ci
       - run: node scripts/fetch-live.ts
         env:
-          PREVIOUS_LIVE_URL: https://${{ github.repository_owner }}.github.io/bara-karhutla/data/live.json
+          # Hardcoded deploy URL: this site lives at katsugtgz.github.io/bara-karhutla.
+          PREVIOUS_LIVE_URL: https://katsugtgz.github.io/bara-karhutla/data/live.json
       - run: npm test
       - run: npx -y react-doctor@latest --yes --no-telemetry --blocking error
       - run: BASE_PATH=/bara-karhutla/ npm run build

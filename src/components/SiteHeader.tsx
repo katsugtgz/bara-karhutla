@@ -1,9 +1,9 @@
 import './site-header.css';
 
 const NAV = [
-  { id: 'pantau', label: 'Pantau', path: '' },
-  { id: 'kisah', label: 'Kisah 20 tahun', path: 'kisah/' },
-  { id: 'metode', label: 'Metode & sumber', path: 'metode/' },
+  { id: 'pantau', label: 'Pantau', short: 'Pantau', path: '' },
+  { id: 'kisah', label: 'Kisah 20 tahun', short: 'Kisah', path: 'kisah/' },
+  { id: 'metode', label: 'Metode & sumber', short: 'Metode', path: 'metode/' },
 ] as const;
 
 export interface SiteHeaderProps {
@@ -24,7 +24,9 @@ export function SiteHeader({ current }: SiteHeaderProps) {
             href={`${base}${item.path}`}
             aria-current={current === item.id ? 'page' : undefined}
           >
-            {item.label}
+            {/* Short labels keep the bar on one line on phones (only one is ever rendered). */}
+            <span className="nav-long">{item.label}</span>
+            <span className="nav-short">{item.short}</span>
           </a>
         ))}
       </nav>

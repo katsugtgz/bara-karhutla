@@ -1,0 +1,394 @@
+@layer pages {
+  /* Lenis smooth-scroll requirements */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  /* Fixed scene behind everything. Sky tokens are data — identical in both modes. */
+  .kisah-sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--sky-1);
+    display: none;
+
+    &.is-visible {
+      display: block;
+    }
+  }
+
+  .kisah-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    inline-size: 100%;
+    block-size: 100svh;
+    pointer-events: none;
+
+    &.is-off {
+      display: none;
+    }
+  }
+
+  .kisah-main {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* keep the header clickable above the fixed canvas */
+  .kisah .site-header {
+    position: relative;
+    z-index: 3;
+  }
+
+  .kisah-section {
+    position: relative;
+  }
+
+  /* Opening: one calm full-viewport hero before the story starts scrolling. */
+  .kisah-section:first-child {
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+  }
+
+  /* Story text: narrow column, offset to the left third on desktop. Ink stays
+     peat over the pale sky; sky-4 blocks carry their own light ink token. */
+  .kisah-block {
+    max-inline-size: 30rem;
+    padding: 1.5rem 16px;
+    color: var(--peat);
+    /* Backing follows the live sky, not the page surface: sky tokens stay
+       light in dark mode (they are data), so peat ink always reads. */
+    --back: var(--live-sky, var(--mist));
+
+    h1,
+    h2 {
+      margin-block-end: 0.75rem;
+    }
+
+    p {
+      margin-block: 0.75rem;
+    }
+  }
+
+  .kisah-block.sky-4 {
+    color: var(--sky-4-ink);
+    --back: var(--sky-4);
+  }
+
+  blockquote {
+    border-inline-start: 3px solid var(--rule);
+    padding-inline-start: 1rem;
+    margin-block: 1rem;
+  }
+
+  .kisah-kicker {
+    font-size: 0.875rem;
+    color: color-mix(in oklab, currentColor 72%, transparent);
+  }
+
+  .kisah-question {
+    font-family: var(--font-display);
+    font-size: 1.3125rem;
+    font-weight: 640;
+    line-height: 1.1;
+  }
+
+  .kisah-note {
+    font-size: 0.875rem;
+    color: color-mix(in oklab, currentColor 78%, transparent);
+  }
+
+  /* One big number per screen (progressive disclosure by scroll). */
+  .kisah-screen {
+    min-block-size: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .kisah-big {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+  }
+
+  .kisah-sub {
+    font-size: 1.125rem;
+  }
+
+  /* Timeline: tall scroll region, sticky viewport inside. */
+  .kisah-timeline {
+    block-size: 380svh;
+  }
+
+  .kisah-timeline-sticky {
+    position: sticky;
+    top: 0;
+    block-size: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    color: var(--sky-ink, var(--peat));
+    --back: var(--sky, var(--sky-1));
+  }
+
+  .kisah-year {
+    font-family: var(--font-display);
+    font-size: clamp(3.75rem, 14vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    font-variation-settings: 'wdth' 100;
+  }
+
+  .kisah-count {
+    font-size: 1.125rem;
+  }
+
+  .kisah-area {
+    font-size: 0.875rem;
+  }
+
+  .kisah-area-link {
+    color: inherit;
+  }
+
+  .kisah-strip {
+    margin-block-start: 1rem;
+    max-inline-size: 22rem;
+
+    svg {
+      inline-size: 100%;
+      block-size: auto;
+    }
+  }
+
+  /* Bars read in the current ink on both peat and light skies; the active
+     year is the only ember in the strip. */
+  .kisah-bar {
+    fill: currentColor;
+    opacity: 0.5;
+
+    &.is-active {
+      fill: var(--ember);
+      opacity: 1;
+    }
+  }
+
+  .kisah-live {
+    border-block-start: 1px solid var(--rule);
+    padding-block-start: 0.75rem;
+  }
+
+  .kisah-actions {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    margin-block: 1rem;
+  }
+
+  /* Closing actions: one primary button, the rest plain links in the current
+     ink — readable on whatever sky the story closes on. */
+  .kisah-action-primary {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-button);
+    background: var(--peat);
+    /* --mist flips to a dark surface in dark mode; the label must stay light
+       on the peat fill, so use the stable light ink (≥ 13:1 on --peat). */
+    color: var(--sky-4-ink);
+    font: inherit;
+    text-decoration: none;
+
+    &:hover {
+      background: color-mix(in oklab, var(--peat) 88%, var(--mist));
+    }
+  }
+
+  .kisah-action {
+    display: inline;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: none;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Mobile: full-width blocks with a translucent sky backing (DESIGN.md). */
+  @media (max-width: 959px) {
+    .kisah-block,
+    .kisah-timeline-sticky {
+      max-inline-size: none;
+      background: color-mix(in oklab, var(--back) 86%, transparent);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .kisah-block,
+    .kisah-timeline-sticky {
+      margin-inline-start: clamp(1.5rem, 18vw, 26rem);
+      padding: 1.25rem 1.5rem;
+    }
+
+    /* One soft scrim of the live sky behind the text column, fading out before
+       the map (the scene is shifted right), instead of per-block panels whose
+       hard edges sliced through the islands. Sits above the canvas, below text. */
+    .kisah::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 90%, transparent) 0%,
+        color-mix(in srgb, var(--live-sky, var(--sky-1)) 78%, transparent) 42%,
+        transparent 62%
+      );
+    }
+
+    /* Ink follows the sky (the scene sets data-ink from the blended colour). */
+    .kisah .kisah-block,
+    .kisah .kisah-timeline-sticky {
+      color: var(--peat);
+    }
+    .kisah[data-ink='light'] .kisah-block,
+    .kisah[data-ink='light'] .kisah-timeline-sticky {
+      color: var(--sky-4-ink);
+    }
+  }
+
+  /* ---- Peat cross-section: scroll-driven drain + ember glow ----
+     Final state is the default (static fallback + reduced motion);
+     the animation only runs where scroll-driven timelines are supported. */
+  .peat-fig {
+    margin-block: 1.25rem;
+
+    svg {
+      inline-size: 100%;
+      max-inline-size: 24rem;
+      block-size: auto;
+    }
+
+    figcaption {
+      font-size: 0.875rem;
+      max-inline-size: 34rem;
+      margin-block-start: 0.5rem;
+    }
+  }
+
+  .peat-sky {
+    fill: color-mix(in oklab, currentColor 10%, transparent);
+  }
+  .peat-body {
+    fill: var(--peat);
+  }
+  .peat-surface {
+    stroke: var(--tea);
+    stroke-width: 2;
+  }
+  .peat-water {
+    fill: var(--sedge);
+    opacity: 0.35;
+    /* final (drained) state — also the static fallback */
+    transform: translateY(48px);
+  }
+  .peat-embers {
+    opacity: 1;
+  }
+  .peat-embers circle {
+    fill: var(--ember);
+  }
+  .peat-glow {
+    opacity: 0.3;
+  }
+  .peat-label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    fill: var(--peat);
+  }
+  .peat-label-water {
+    fill: var(--sedge);
+  }
+  .peat-label-peat,
+  .peat-label-ember {
+    fill: var(--mist);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) and (animation-range: 0% 100%) {
+      .peat-fig {
+        view-timeline: --peat-tl block;
+      }
+      .peat-water {
+        animation: peat-drain linear both;
+        animation-timeline: --peat-tl;
+        animation-range: entry 40% cover 70%;
+      }
+      .peat-embers {
+        animation: peat-ember-in linear both;
+        animation-timeline: --peat-tl;
+        animation-range: cover 40% cover 85%;
+      }
+    }
+  }
+
+  /* declaration order: animation-timeline/range come AFTER the shorthand */
+  @keyframes peat-drain {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(48px);
+    }
+  }
+
+  @keyframes peat-ember-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer pages {
+  /* Source buttons follow the ink so they stay visible on the red sky too. */
+  .kisah .sourced-btn {
+    color: currentColor;
+    opacity: 0.75;
+  }
+  .kisah .sourced-btn:hover,
+  .kisah .sourced-btn:focus-visible {
+    opacity: 1;
+  }
+}

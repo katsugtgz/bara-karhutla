@@ -1,0 +1,264 @@
+@layer pages {
+  .monitor {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      'hero map'
+      'panel map';
+    block-size: calc(100dvh - 49px); /* header 48px + 1px rule */
+  }
+
+  /* ---- sky panel (hero) ---- */
+  .hero {
+    grid-area: hero;
+    padding: 1rem 16px 1.25rem;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .region-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    flex-wrap: wrap; /* label + select stay on one line when there is room, wrap gracefully on narrow screens */
+    margin-block-end: 1rem;
+  }
+
+  .region-label {
+    font-size: 0.875rem;
+    color: var(--sky-ink, var(--ink));
+  }
+
+  .region-select {
+    border: 1px solid currentcolor;
+    background: transparent;
+    padding: 0.25rem 0.5rem;
+    font-weight: 700;
+    /* no max-inline-size: the longest name must never truncate to "Sumatera Sela…" */
+  }
+
+  .risk-sentence {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 2.75rem);
+    font-variation-settings: 'wdth' 92;
+    font-weight: 700;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .risk-range {
+    margin-block-start: 0.5rem;
+    font-size: 1.125rem;
+  }
+
+  .risk-fetch {
+    margin-block-start: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--sky-ink, var(--ink));
+  }
+
+  .risk-stale {
+    margin-block-start: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  /* ---- map column ---- */
+  .map-wrap {
+    grid-area: map;
+    position: relative;
+    min-block-size: 0;
+  }
+
+  .map-el {
+    position: absolute;
+    inset: 0;
+  }
+
+  .health-warning {
+    color: var(--ember);
+    font-weight: 700;
+  }
+
+  .legend {
+    position: absolute;
+    inset-block-end: 12px;
+    inset-inline-start: 12px;
+    z-index: 2;
+    background: var(--mist);
+    color: var(--ink);
+    border-radius: 4px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    max-inline-size: min(15rem, 70%);
+  }
+
+  .legend summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .legend-head {
+    color: var(--tea);
+    font-size: 0.75rem;
+    margin-block: 0.5rem 0.1rem;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-block: 0.1rem;
+  }
+
+  .swatch {
+    inline-size: 1.1em;
+    block-size: 1.1em;
+    flex: none;
+    border: 1px solid rgb(42 29 21 / 0.25);
+  }
+
+  .swatch.hot-24 {
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 0 1px var(--peat);
+  }
+
+  .swatch.hot-old {
+    border-radius: 50%;
+    background: var(--ember);
+    opacity: 0.45;
+  }
+
+  /* ---- lower panel ---- */
+  .panel {
+    grid-area: panel;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding: 1rem 16px 2rem;
+  }
+
+  .panel h2 {
+    font-size: 1.125rem;
+    margin-block: 1.25rem 0.25rem;
+  }
+
+  .panel h2:first-child {
+    margin-block-start: 0;
+  }
+
+  .signal-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.55rem;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .signal-row dt {
+    color: var(--tea);
+  }
+
+  .signal-row dd {
+    text-align: end;
+  }
+
+  .topcell-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .topcell-btn {
+    display: block;
+    inline-size: 100%;
+    text-align: start;
+    background: none;
+    border: 0;
+    border-block-end: 1px solid var(--rule);
+    padding: 0.55rem 0.25rem;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .topcell-btn:hover,
+  .topcell-btn[aria-current='true'] {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .health-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-block: 0.4rem;
+    border-block-end: 1px solid var(--rule);
+    font-size: 0.875rem;
+  }
+
+  .health-row .dot {
+    flex: none;
+    translate: 0 0.1em;
+  }
+
+  .disclaimer {
+    margin-block-start: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--tea);
+  }
+
+  .loading {
+    padding: 1.5rem 16px;
+  }
+
+  /* ---- maplibre popup, styled with the tokens ---- */
+  .maplibregl-popup-content {
+    background: var(--mist);
+    color: var(--ink);
+    border-radius: var(--radius-popover);
+    box-shadow: var(--shadow-popover);
+    padding: 0.75rem 1rem;
+    font: 0.875rem/1.45 var(--font-body);
+    min-inline-size: 14rem;
+  }
+
+  .maplibregl-popup-content p + p {
+    margin-block-start: 0.35em;
+  }
+
+  .maplibregl-popup-tip {
+    border-top-color: var(--mist);
+    border-bottom-color: var(--mist);
+  }
+
+  .maplibregl-ctrl-group {
+    border-radius: var(--radius-button);
+  }
+
+  /* ---- mobile: sentence, map 62svh, then the rest ---- */
+  @media (max-width: 959px) {
+    .monitor {
+      display: block;
+      block-size: auto;
+    }
+
+    .map-wrap {
+      block-size: 62svh;
+      border-block: 1px solid var(--rule);
+    }
+
+    .panel,
+    .hero {
+      overflow: visible;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .monitor {
+      padding-inline: 0;
+    }
+  }
+}
