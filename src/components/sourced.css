@@ -4,6 +4,11 @@
     white-space: nowrap;
   }
 
+  /* Sentence-length values wrap like prose (see Sourced.tsx). */
+  .sourced-long {
+    white-space: normal;
+  }
+
   .sourced-value {
     font-variant-numeric: tabular-nums;
   }

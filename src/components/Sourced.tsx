@@ -48,12 +48,19 @@ export function Sourced({ value, unit, source }: SourcedProps) {
     pop.style.insetBlockStart = `${top}px`;
   };
 
+  // Short figures ("666 titik") never break. Sentence-length values must wrap,
+  // or they push the page sideways on 360 px phones; the no-break space below
+  // still keeps the ⓘ on the same line as the last word.
+  const text = `${typeof value === 'string' ? value : ''}${unit ? ` ${unit}` : ''}`;
+  const long = text.length > 24;
+
   return (
-    <span className="sourced">
+    <span className={long ? 'sourced sourced-long' : 'sourced'}>
       <span className="sourced-value">
         {value === null ? 'tidak tersedia' : value}
         {value !== null && unit ? <span> {unit}</span> : null}
-      </span>{' '}
+      </span>
+      {' '}
       <button
         ref={btnRef}
         type="button"
