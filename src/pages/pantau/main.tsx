@@ -88,16 +88,23 @@ export function Pantau() {
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
+    // Abort on unmount or a newer retry, so a late response never lands.
+    const ctrl = new AbortController();
+    const { signal } = ctrl;
     Promise.all([
-      fetch(`${base}data/live.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
-      fetch(`${base}data/regions.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      fetch(`${base}data/live.json`, { signal }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      fetch(`${base}data/regions.json`, { signal }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
     ])
       .then(([jLive, jRegions]: [LiveData, RegionsFile]) => {
+        if (signal.aborted) return;
         setLive(jLive);
         setRegionsFile(jRegions);
         setRegionId(readInitialRegion(jRegions));
       })
-      .catch(() => setError(true));
+      .catch(() => {
+        if (!signal.aborted) setError(true);
+      });
+    return () => ctrl.abort();
   }, [attempt]);
 
   const retry = () => {
