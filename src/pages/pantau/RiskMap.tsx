@@ -217,6 +217,7 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
     const container = containerRef.current;
     if (!container) return;
     const styleUrl = window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK : POSITRON;
+    const phoneMq = window.matchMedia('(pointer: coarse) and (max-width: 959px)');
     const map = new MlMap({
       container,
       style: styleUrl,
@@ -226,7 +227,7 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
       locale: LOCALE_ID,
       // On phones the map fills 62svh of a scrolling page: one finger must
       // scroll the page, two fingers move the map. Desktop keeps plain gestures.
-      cooperativeGestures: window.matchMedia('(pointer: coarse) and (max-width: 959px)').matches,
+      cooperativeGestures: phoneMq.matches,
     });
     mapRef.current = map;
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
@@ -281,8 +282,15 @@ export function RiskMap({ live, region, regionName, selected, flyToken, onSelect
       map.setStyle(e.matches ? DARK : POSITRON);
     };
     mq.addEventListener('change', onScheme);
+    // Rotating or resizing across 959px switches the gesture mode on the live map.
+    const onPhone = (e: MediaQueryListEvent) => {
+      if (e.matches) map.cooperativeGestures.enable();
+      else map.cooperativeGestures.disable();
+    };
+    phoneMq.addEventListener('change', onPhone);
     return () => {
       mq.removeEventListener('change', onScheme);
+      phoneMq.removeEventListener('change', onPhone);
       map.off('styledata', onStyleData);
       map.off('load', onLoad);
       map.off('click', 'cells-fill', onCellClick);

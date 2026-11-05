@@ -110,6 +110,9 @@ export function Pantau() {
   const retry = () => {
     setError(false);
     setAttempt((a) => a + 1);
+    // The retry button unmounts with the error state; keep keyboard focus in
+    // the page by moving it to the new main once React has committed.
+    requestAnimationFrame(() => document.getElementById('konten')?.focus());
   };
 
   const region = regionsFile?.regions.find((r) => r.id === regionId) ?? null;

@@ -76,7 +76,9 @@ DESIGN.md rule broken; **low** = finish and rhythm.
 - axe: 0 violations on all three pages in light mode, and on Pantau and Metode in dark
   mode (Kisah dark: the canvas false positive above).
 - No horizontal scroll on any page at 360px.
-- After screenshots: `shots/opus/`, compared one by one against `shots/before/`.
+- Screenshots: before and after sets were captured locally with the same agent-browser
+  script and compared one by one. They are not committed (about 27 MB of PNGs); re-run
+  the capture against any build to reproduce them.
 
 ## Commits
 

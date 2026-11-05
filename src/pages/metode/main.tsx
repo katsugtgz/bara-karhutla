@@ -110,11 +110,17 @@ function LogTable() {
                 <td className="num">{shortWib(l.generatedAt)}</td>
                 {cols.map((c) => {
                   const s = l.sources.find((x) => x.id === c);
-                  const status = s?.status ?? 'failed';
+                  // A source missing from a log line gets no dot: the log never recorded a failure.
                   return (
                     <td key={c} className="log-status" title={s?.warning ?? undefined}>
-                      <span className={STATUS_DOT[status]} aria-hidden="true" />
-                      {s ? STATUS_WORD[s.status] : '—'}
+                      {s ? (
+                        <>
+                          <span className={STATUS_DOT[s.status]} aria-hidden="true" />
+                          {STATUS_WORD[s.status]}
+                        </>
+                      ) : (
+                        '—'
+                      )}
                     </td>
                   );
                 })}
