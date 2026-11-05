@@ -321,10 +321,14 @@
     stroke-width: 2;
   }
   .peat-water {
-    fill: var(--sedge-sky);
-    opacity: 0.35;
     /* final (drained) state — also the static fallback */
     transform: translateY(48px);
+  }
+  /* Tint only the water, not its label: group opacity left "muka air" at
+     a third of its contrast on the dark peat. */
+  .peat-water rect {
+    fill: var(--sedge-sky);
+    opacity: 0.35;
   }
   .peat-embers {
     opacity: 1;
@@ -340,12 +344,14 @@
     font-size: 11px;
     fill: var(--peat);
   }
+  /* Labels on the dark peat use the stable light ink: --mist turns dark in
+     dark mode and made "bara" and "gambut" vanish. */
   .peat-label-water {
-    fill: var(--sedge-sky);
+    fill: var(--sky-1);
   }
   .peat-label-peat,
   .peat-label-ember {
-    fill: var(--mist);
+    fill: var(--sky-4-ink);
   }
 
   @media (prefers-reduced-motion: no-preference) {
