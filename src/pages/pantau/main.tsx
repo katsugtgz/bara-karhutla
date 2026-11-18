@@ -229,6 +229,22 @@ export function Pantau() {
           </div>
 
           <section className="panel">
+            <section className="showcase" aria-label="Cuplikan Bara">
+              <h2>Cuplikan: dari orbit ke gambut</h2>
+              <video
+                className="showcase-video"
+                src={`${import.meta.env.BASE_URL}media/bara-showcase.mp4`}
+                controls
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+              <p className="showcase-caption">
+                15 detik: satelit memantau titik panas, lalu peta risiko dan sumber datanya. Tanpa suara.
+              </p>
+            </section>
+
             <Signals summary={summary} firmsSource={firmsSource} omSource={omSource} />
 
             <h2>Sel paling berisiko</h2>

@@ -170,6 +170,24 @@
     margin-block-start: 0;
   }
 
+  /* ---- showcase video ---- */
+  .showcase-video {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 16 / 9;
+    block-size: auto;
+    margin-block-start: 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 8px);
+    background: var(--ink);
+  }
+
+  .showcase-caption {
+    margin-block-start: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--tea);
+  }
+
   .signal-row {
     display: flex;
     align-items: baseline;
