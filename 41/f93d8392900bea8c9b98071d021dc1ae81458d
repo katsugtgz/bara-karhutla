@@ -1,0 +1,23 @@
+src/pages/pantau/monitor.css
+  s_04355e4fd641b3::t_d7bf155b102b2d 173-190
+README.md
+  s_04355e4fd641b3::t_b6b4a65d23145d 7,9
+src/pages/pantau/main.tsx
+  s_04355e4fd641b3::t_d261c3abfc2ccd 232-247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "41f93d8392900bea8c9b98071d021dc1ae81458d",
+  "prompts": {},
+  "sessions": {
+    "s_04355e4fd641b3": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1ec62-820f-7247-a417-a09aa782a86f",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Muhammad Naufal Mahdi <053792227@ecampus.ut.ac.id>"
+    }
+  }
+}
