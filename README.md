@@ -4,7 +4,7 @@ Bara adalah pemantau peringatan dini kebakaran hutan dan lahan gambut (karhutla)
 Indonesia. Namanya dari fakta inti kebakaran gambut: bara tetap menyala di bawah tanah
 walau permukaan terlihat aman.
 
-[![Bara dilihat dari orbit: satelit mengamatinya Bumi, teks "Dari orbit ke gambut — peringatan dini karhutla Indonesia"]](public/media/bara-readme.webp)
+[![Bara dilihat dari orbit: satelit mengamatinya Bumi, teks "Dari orbit ke gambut — peringatan dini karhutla Indonesia"]](public/media/bara-readme.gif)
 
 [Buka aplikasi Bara](https://katsugtgz.github.io/bara-karhutla/) · [Tonton cuplikan videonya (MP4, 15 detik)](public/media/bara-showcase.mp4)
 
